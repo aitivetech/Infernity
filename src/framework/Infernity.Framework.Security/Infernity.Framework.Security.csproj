@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference
+                Include="../../tools/Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
+                OutputItemType="Analyzer"
+                ReferenceOutputAssembly="false"
+        />
+        <ProjectReference Include="..\Infernity.Framework.Core\Infernity.Framework.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.ObjectPool" />
+      <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
+    </ItemGroup>
+
+</Project>
