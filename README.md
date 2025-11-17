@@ -1,1 +1,1 @@
-# InfernityServer
+# Infernity

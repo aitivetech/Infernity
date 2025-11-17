@@ -1,0 +1,73 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{9C2EB897-244A-48FC-98D8-3AE2ED3CE1E4}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		LICENSE.md = LICENSE.md
+		README.md = README.md
+		.gitignore = .gitignore
+		Directory.Packages.props = Directory.Packages.props
+		global.json = global.json
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{94D25C2D-58D5-4C99-8219-4E25DD751B8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Tools.SourceGenerators", "src\tools\Infernity.Tools.SourceGenerators\Infernity.Tools.SourceGenerators.csproj", "{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Framework", "Framework", "{5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Core", "src\framework\Infernity.Framework.Core\Infernity.Framework.Core.csproj", "{F8A83B7C-1983-46AC-A619-92814D1DE3AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{51A0C91E-1F9C-4AA6-B73A-E0BB7C21DE52}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Server", "src\server\Infernity.Server\Infernity.Server.csproj", "{F0431A9A-190A-450E-B835-E7C3B7E6C691}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Inference", "Inference", "{A02ADFA7-B47B-4549-BF91-8E0895AD38A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Configuration", "src\framework\Infernity.Framework.Configuration\Infernity.Framework.Configuration.csproj", "{B2D7B577-0276-441C-9DFB-C9FE5FF6F999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.DependencyInjection", "src\framework\Infernity.Framework.DependencyInjection\Infernity.Framework.DependencyInjection.csproj", "{0979A486-CD99-4F76-8DF8-58DDDBECB4F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Json", "src\framework\Infernity.Framework.Json\Infernity.Framework.Json.csproj", "{48213345-5E68-469D-AB4B-25730EC14234}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875} = {94D25C2D-58D5-4C99-8219-4E25DD751B8C}
+		{F8A83B7C-1983-46AC-A619-92814D1DE3AE} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+		{F0431A9A-190A-450E-B835-E7C3B7E6C691} = {51A0C91E-1F9C-4AA6-B73A-E0BB7C21DE52}
+		{B2D7B577-0276-441C-9DFB-C9FE5FF6F999} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+		{0979A486-CD99-4F76-8DF8-58DDDBECB4F1} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+		{48213345-5E68-469D-AB4B-25730EC14234} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A83B7C-1983-46AC-A619-92814D1DE3AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A83B7C-1983-46AC-A619-92814D1DE3AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A83B7C-1983-46AC-A619-92814D1DE3AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A83B7C-1983-46AC-A619-92814D1DE3AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F0431A9A-190A-450E-B835-E7C3B7E6C691}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0431A9A-190A-450E-B835-E7C3B7E6C691}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0431A9A-190A-450E-B835-E7C3B7E6C691}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0431A9A-190A-450E-B835-E7C3B7E6C691}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2D7B577-0276-441C-9DFB-C9FE5FF6F999}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2D7B577-0276-441C-9DFB-C9FE5FF6F999}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2D7B577-0276-441C-9DFB-C9FE5FF6F999}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2D7B577-0276-441C-9DFB-C9FE5FF6F999}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0979A486-CD99-4F76-8DF8-58DDDBECB4F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0979A486-CD99-4F76-8DF8-58DDDBECB4F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0979A486-CD99-4F76-8DF8-58DDDBECB4F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0979A486-CD99-4F76-8DF8-58DDDBECB4F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{48213345-5E68-469D-AB4B-25730EC14234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48213345-5E68-469D-AB4B-25730EC14234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48213345-5E68-469D-AB4B-25730EC14234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48213345-5E68-469D-AB4B-25730EC14234}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
