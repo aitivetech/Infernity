@@ -6,6 +6,16 @@ public static class TypeExtensions
 {
     extension(Type type)
     {
+        public bool ImplementsInterface<T>()
+        {
+            return type.ImplementsInterface(typeof(T));
+        }
+
+        public bool ImplementsInterface(Type interfaceType)
+        {
+            return type.GetInterfaces().Contains(interfaceType);
+        }
+        
         public bool IsDefaultConstructibleClass()
         {
             if (type is { IsClass: true, IsAbstract: false })

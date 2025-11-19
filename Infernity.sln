@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{9C
 		Directory.Packages.props = Directory.Packages.props
 		global.json = global.json
 		.editorconfig = .editorconfig
+		version.json = version.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{94D25C2D-58D5-4C99-8219-4E25DD751B8C}"
@@ -35,6 +36,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Plugins
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Security", "src\framework\Infernity.Framework.Security\Infernity.Framework.Security.csproj", "{C1E69856-C51B-404D-ABDF-A069FD7570B7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Server.OpenAi", "src\server\Infernity.Server.OpenAi\Infernity.Server.OpenAi.csproj", "{97C3BA99-5C4C-444B-BEC4-789D68E1B5F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Plugins.Web", "src\framework\Infernity.Framework.Plugins.Web\Infernity.Framework.Plugins.Web.csproj", "{284B1D2D-499E-41C4-874F-894D6111F639}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Web", "src\framework\Infernity.Framework.Web\Infernity.Framework.Web.csproj", "{D681CC0E-6FCF-4FC8-BA72-A7AAE59CF0C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Logging", "src\framework\Infernity.Framework.Logging\Infernity.Framework.Logging.csproj", "{F32DA12D-629C-4726-819A-A100051FB635}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +58,10 @@ Global
 		{48213345-5E68-469D-AB4B-25730EC14234} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
 		{E1054366-274C-4932-8B74-4CD1450A860F} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
 		{C1E69856-C51B-404D-ABDF-A069FD7570B7} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+		{97C3BA99-5C4C-444B-BEC4-789D68E1B5F2} = {51A0C91E-1F9C-4AA6-B73A-E0BB7C21DE52}
+		{284B1D2D-499E-41C4-874F-894D6111F639} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+		{D681CC0E-6FCF-4FC8-BA72-A7AAE59CF0C6} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
+		{F32DA12D-629C-4726-819A-A100051FB635} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -83,5 +96,21 @@ Global
 		{C1E69856-C51B-404D-ABDF-A069FD7570B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1E69856-C51B-404D-ABDF-A069FD7570B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1E69856-C51B-404D-ABDF-A069FD7570B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97C3BA99-5C4C-444B-BEC4-789D68E1B5F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97C3BA99-5C4C-444B-BEC4-789D68E1B5F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97C3BA99-5C4C-444B-BEC4-789D68E1B5F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97C3BA99-5C4C-444B-BEC4-789D68E1B5F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{284B1D2D-499E-41C4-874F-894D6111F639}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{284B1D2D-499E-41C4-874F-894D6111F639}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{284B1D2D-499E-41C4-874F-894D6111F639}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{284B1D2D-499E-41C4-874F-894D6111F639}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D681CC0E-6FCF-4FC8-BA72-A7AAE59CF0C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D681CC0E-6FCF-4FC8-BA72-A7AAE59CF0C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D681CC0E-6FCF-4FC8-BA72-A7AAE59CF0C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D681CC0E-6FCF-4FC8-BA72-A7AAE59CF0C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F32DA12D-629C-4726-819A-A100051FB635}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F32DA12D-629C-4726-819A-A100051FB635}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F32DA12D-629C-4726-819A-A100051FB635}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F32DA12D-629C-4726-819A-A100051FB635}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

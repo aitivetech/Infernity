@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference
+                Include="../../tools/Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
+                OutputItemType="Analyzer"
+                ReferenceOutputAssembly="false"
+        />
+        <ProjectReference Include="..\Infernity.Framework.Plugins\Infernity.Framework.Plugins.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FastEndpoints" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="Activators\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="Activators\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Activators\**" />
+    </ItemGroup>
+    
+</Project>

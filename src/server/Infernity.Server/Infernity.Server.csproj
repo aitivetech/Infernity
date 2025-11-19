@@ -1,2 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
+  <ItemGroup>
+    <ProjectReference Include="..\..\framework\Infernity.Framework.Logging\Infernity.Framework.Logging.csproj" />
+    <ProjectReference Include="..\..\framework\Infernity.Framework.Plugins.Web\Infernity.Framework.Plugins.Web.csproj" />
+    <ProjectReference Include="..\..\framework\Infernity.Framework.Web\Infernity.Framework.Web.csproj" />
+  </ItemGroup>
 </Project>

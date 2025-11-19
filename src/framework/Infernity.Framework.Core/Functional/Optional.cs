@@ -22,6 +22,22 @@ internal interface IOptional
 
 public static class Optional
 {
+    extension<T>(IEnumerable<Optional<T>> items)
+    {
+        public Optional<T> FirstOrNone()
+        {
+            foreach (var item in items)
+            {
+                if (item)
+                {
+                    return item;
+                }
+            }
+            
+            return None<T>();
+        }
+    }
+    
     /// <param name="task">The task returning optional value.</param>
     /// <typeparam name="T">The type of the value.</typeparam>
     extension<T>(Task<Optional<T>> task) where T : struct

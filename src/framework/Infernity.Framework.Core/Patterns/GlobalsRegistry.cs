@@ -12,6 +12,11 @@ public static class GlobalsRegistry
         _globals[typeof(T)] = instance;
     }
 
+    public static void Remove<T>()
+    {
+        _globals.Remove(typeof(T),out _);
+    }
+
     public static T Resolve<T>()
         where T : notnull
     {

@@ -8,192 +8,203 @@ namespace Infernity.Framework.Core.Collections;
 
 public static class DictionaryExtensions
 {
-    public static bool TryGetValue<TKey, TValue>(this IEnumerable<Dictionary<TKey, TValue>> sources,
-                                                 TKey                                       key,
-                                                 [MaybeNullWhen(false)] out TValue          value)
-        where TKey : notnull
+    extension<TKey, TValue>(IEnumerable<Dictionary<TKey, TValue>> sources) where TKey : notnull
     {
-        foreach (var source in sources)
+        public bool TryGetValue(TKey                                       key,
+            [MaybeNullWhen(false)] out TValue          value)
         {
-            if (source.TryGetValue(key, out value))
+            foreach (var source in sources)
             {
-                return true;
+                if (source.TryGetValue(key, out value))
+                {
+                    return true;
+                }
             }
-        }
 
-        value = default;
-        return false;
+            value = default;
+            return false;
+        }
     }
 
-    public static TValue GetOrAdd<TKey, TValue>(
-        this IDictionary<TKey, TValue> source,
-        TKey                           key,
-        Func<TKey, TValue>             factory)
+    extension<TKey, TValue>(IDictionary<TKey, TValue> source)
     {
-        if (source.TryGetValue(key, out var result))
+        public TValue GetOrAdd(TKey                           key,
+            Func<TKey, TValue>             factory)
         {
+            if (source.TryGetValue(key, out var result))
+            {
+                return result;
+            }
+
+            result = factory.Invoke(key);
+            source.Add(key, result);
             return result;
         }
 
-        result = factory.Invoke(key);
-        source.Add(key, result);
-        return result;
-    }
-
-    public static IDictionary<TKey, TValue> Clone<TKey, TValue>(this IDictionary<TKey, TValue> source)
-        where TKey : notnull
-    {
-        return source.ToDictionary(k => k.Key, kv => kv.Value);
-    }
-
-    public static Dictionary<TKey, TValue> Clone<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source)
-        where TKey : notnull
-    {
-        return source.ToDictionary(k => k.Key, kv => kv.Value);
-    }
-
-    public static IDictionary<TKey, TValue> AddAll<TKey, TValue>(
-        this IDictionary<TKey, TValue>    target,
-        IReadOnlyDictionary<TKey, TValue> source,
-        bool                              set)
-    {
-        foreach (var entry in source)
+        public IDictionary<TKey, TValue> AddAll(IReadOnlyDictionary<TKey, TValue> source1,
+            bool                              set)
         {
-            if (set)
+            foreach (var entry in source1)
             {
-                target[entry.Key] = entry.Value;
+                if (set)
+                {
+                    source[entry.Key] = entry.Value;
+                }
+                else
+                {
+                    source.Add(entry.Key, entry.Value);
+                }
             }
-            else
+
+            return source;
+        }
+    }
+
+    extension<TKey, TValue>(IDictionary<TKey, TValue> source) where TKey : notnull
+    {
+        public IDictionary<TKey, TValue> Clone()
+        {
+            return source.ToDictionary(k => k.Key, kv => kv.Value);
+        }
+    }
+
+    extension<TKey, TValue>(IReadOnlyDictionary<TKey, TValue> source) where TKey : notnull
+    {
+        public Dictionary<TKey, TValue> Clone()
+        {
+            return source.ToDictionary(k => k.Key, kv => kv.Value);
+        }
+    }
+
+    extension(object value)
+    {
+        public IReadOnlyDictionary<string, object?> PropertiesToDictionary()
+        {
+            if (value is IReadOnlyDictionary<string, object?> dict)
             {
-                target.Add(entry.Key, entry.Value);
+                return dict;
             }
-        }
 
-        return target;
-    }
+            var result = new Dictionary<string, object?>();
 
-    public static IReadOnlyDictionary<string, object?> PropertiesToDictionary(this object value)
-    {
-        if (value is IReadOnlyDictionary<string, object?> dict)
-        {
-            return dict;
-        }
-
-        var result = new Dictionary<string, object?>();
-
-        foreach (var propertyInfo in value
-                                     .GetType()
-                                     .GetProperties(BindingFlags.Instance | BindingFlags.Public))
-        {
-            if (propertyInfo.CanRead)
+            foreach (var propertyInfo in value
+                         .GetType()
+                         .GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
-                var propertyValue = propertyInfo.GetValue(value);
-                result.Add(propertyInfo.Name, propertyValue);
+                if (propertyInfo.CanRead)
+                {
+                    var propertyValue = propertyInfo.GetValue(value);
+                    result.Add(propertyInfo.Name, propertyValue);
+                }
             }
-        }
 
-        return result;
+            return result;
+        }
     }
 
-    public static Optional<TValue> GetOptional<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> input, TKey key)
+    extension<TKey, TValue>(IReadOnlyDictionary<TKey, TValue> input)
     {
-        if (input.TryGetValue(key, out var value))
+        public Optional<TValue> GetOptional(TKey key)
         {
-            return value;
-        }
-
-        return Optional.None<TValue>();
-    }
-
-    public static IReadOnlyDictionary<TKey, TValue> Merge<TKey, TValue>(
-        this IEnumerable<IReadOnlyDictionary<TKey, TValue>> sources)
-        where TKey : notnull
-    {
-        var result = new Dictionary<TKey, TValue>();
-
-        foreach (var source in sources)
-        {
-            foreach (var entry in source)
+            if (input.TryGetValue(key, out var value))
             {
-                result.TryAdd(entry.Key, entry.Value);
+                return value;
             }
-        }
 
-        return result;
+            return Optional.None<TValue>();
+        }
     }
 
-    public static IReadOnlyDictionary<TKey, TValue> Except<TKey, TValue>(
-        this IReadOnlyDictionary<TKey, TValue> source, IEnumerable<TKey> keys)
-        where TKey : notnull
+    extension<TKey, TValue>(IEnumerable<IReadOnlyDictionary<TKey, TValue>> sources) where TKey : notnull
     {
-        var result = new Dictionary<TKey, TValue>(source);
-
-        foreach (var key in keys)
+        public IReadOnlyDictionary<TKey, TValue> Merge()
         {
-            result.Remove(key);
-        }
+            var result = new Dictionary<TKey, TValue>();
 
-        return result;
+            foreach (var source in sources)
+            {
+                foreach (var entry in source)
+                {
+                    result.TryAdd(entry.Key, entry.Value);
+                }
+            }
+
+            return result;
+        }
     }
 
-    public static IReadOnlyDictionary<TKey, TValue> Except<TKey, TValue>(
-        this IReadOnlyDictionary<TKey, TValue> source, params TKey[] keys)
-        where TKey : notnull
+    extension<TKey, TValue>(IReadOnlyDictionary<TKey, TValue> source) where TKey : notnull
     {
-        return source.Except((IEnumerable<TKey>)keys);
+        public IReadOnlyDictionary<TKey, TValue> Except(IEnumerable<TKey> keys)
+        {
+            var result = new Dictionary<TKey, TValue>(source);
+
+            foreach (var key in keys)
+            {
+                result.Remove(key);
+            }
+
+            return result;
+        }
+
+        public IReadOnlyDictionary<TKey, TValue> Except(params TKey[] keys)
+        {
+            return source.Except((IEnumerable<TKey>)keys);
+        }
     }
 
-    public static string ToTableString<TKey, TValue>(
-        this IReadOnlyDictionary<TKey, TValue> source,
-        Func<TKey, int, string>?               keyFormatter   = null,
-        Func<TValue, int, string>?             valueFormatter = null,
-        string                                 seperator      = " = ")
+    extension<TKey, TValue>(IReadOnlyDictionary<TKey, TValue> source)
     {
-        static string DefaultKeyFormatter(TKey key, int index)
+        public string ToTableString(Func<TKey, int, string>?               keyFormatter   = null,
+            Func<TValue, int, string>?             valueFormatter = null,
+            string                                 seperator      = " = ")
         {
-            return $"({index}): {key}";
-        }
+            static string DefaultKeyFormatter(TKey key, int index)
+            {
+                return $"({index}): {key}";
+            }
 
-        static string DefaultValueFormatter(TValue value, int index)
-        {
-            return $"{value}";
-        }
+            static string DefaultValueFormatter(TValue value, int index)
+            {
+                return $"{value}";
+            }
 
-        var actualKeyFormatter = keyFormatter ?? DefaultKeyFormatter;
-        var actualValueFormatter = valueFormatter ?? DefaultValueFormatter;
+            var actualKeyFormatter = keyFormatter ?? DefaultKeyFormatter;
+            var actualValueFormatter = valueFormatter ?? DefaultValueFormatter;
 
-        var builder = new StringBuilder();
+            var builder = new StringBuilder();
 
-        foreach (var entry in source.Select((entry, index) => (entry, index)))
-        {
-            var line = $"{actualKeyFormatter(entry.entry.Key,entry.index)}{seperator}{actualValueFormatter(entry.entry.Value, entry.index)}";
-            builder.AppendLine(line);
-        }
+            foreach (var entry in source.Select((entry, index) => (entry, index)))
+            {
+                var line = $"{actualKeyFormatter(entry.entry.Key,entry.index)}{seperator}{actualValueFormatter(entry.entry.Value, entry.index)}";
+                builder.AppendLine(line);
+            }
         
-        return builder.ToString();
+            return builder.ToString();
+        }
     }
     
-    public static bool IsEqual<TKey, TValue>(
-        this IReadOnlyDictionary<TKey, TValue> source,
-        IReadOnlyDictionary<TKey, TValue> other,
-        IEqualityComparer<TValue>? valueComparer = null)
-        where TKey : notnull
+    extension<TKey, TValue>(IReadOnlyDictionary<TKey, TValue> source) where TKey : notnull
     {
-        if (source.Count != other.Count)
+        public bool IsEqual(IReadOnlyDictionary<TKey, TValue> other,
+            IEqualityComparer<TValue>? valueComparer = null)
         {
-            return false;
-        }
-
-        var comparer = valueComparer ?? EqualityComparer<TValue>.Default;
-
-        foreach (var entry in source)
-        {
-            if (!other.TryGetValue(entry.Key, out var otherValue) || !comparer.Equals(entry.Value, otherValue))
+            if (source.Count != other.Count)
             {
                 return false;
             }
-        }
 
-        return true;
+            var comparer = valueComparer ?? EqualityComparer<TValue>.Default;
+
+            foreach (var entry in source)
+            {
+                if (!other.TryGetValue(entry.Key, out var otherValue) || !comparer.Equals(entry.Value, otherValue))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
     }
 }
