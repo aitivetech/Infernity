@@ -1,0 +1,25 @@
+2025-11-21 03:28:12.464 +01:00 [INF] Registered 1 endpoints in 81 milliseconds.
+2025-11-21 03:28:12.479 +01:00 [DBG] Initializing Razor view compiler with no compiled views.
+2025-11-21 03:28:12.482 +01:00 [DBG] Registered model binder providers, in the following order: ["Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BinderTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ServicesModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.BodyModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.HeaderModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FloatingPointTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.EnumTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DateTimeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.SimpleTypeModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.TryParseModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CancellationTokenModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ByteArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormFileModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.FormCollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.KeyValuePairModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.DictionaryModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ArrayModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.CollectionModelBinderProvider","Microsoft.AspNetCore.Mvc.ModelBinding.Binders.ComplexObjectModelBinderProvider"]
+2025-11-21 03:28:12.488 +01:00 [INF] No action descriptors found. This may indicate an incorrectly configured application or missing application parts. To learn more, visit https://aka.ms/aspnet/mvc/app-parts
+2025-11-21 03:28:12.489 +01:00 [DBG] Hosting starting
+2025-11-21 03:28:12.491 +01:00 [INF] User profile is available. Using '/home/bglueck/.aspnet/DataProtection-Keys' as key repository; keys will not be encrypted at rest.
+2025-11-21 03:28:12.494 +01:00 [DBG] Reading data from file '/home/bglueck/.aspnet/DataProtection-Keys/key-e4e194e7-848f-4812-a314-547014c86985.xml'.
+2025-11-21 03:28:12.496 +01:00 [DBG] Found key {e4e194e7-848f-4812-a314-547014c86985}.
+2025-11-21 03:28:12.501 +01:00 [DBG] Considering key {e4e194e7-848f-4812-a314-547014c86985} with expiration date 2026-01-23 02:26:05Z as default key.
+2025-11-21 03:28:12.502 +01:00 [DBG] Forwarded activator type request from Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Version=10.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60 to Microsoft.AspNetCore.DataProtection.AuthenticatedEncryption.ConfigurationModel.AuthenticatedEncryptorDescriptorDeserializer, Microsoft.AspNetCore.DataProtection, Culture=neutral, PublicKeyToken=adb9793829ddae60
+2025-11-21 03:28:12.503 +01:00 [DBG] Using managed symmetric algorithm 'System.Security.Cryptography.Aes'.
+2025-11-21 03:28:12.503 +01:00 [DBG] Using managed keyed hash algorithm 'System.Security.Cryptography.HMACSHA256'.
+2025-11-21 03:28:12.505 +01:00 [DBG] Using key {e4e194e7-848f-4812-a314-547014c86985} as the default key.
+2025-11-21 03:28:12.506 +01:00 [DBG] Key ring with default key {e4e194e7-848f-4812-a314-547014c86985} was loaded during application startup.
+2025-11-21 03:28:12.518 +01:00 [DBG] Middleware configuration started with options: {AllowedHosts = *, AllowEmptyHosts = True, IncludeFailureMessage = True}
+2025-11-21 03:28:12.519 +01:00 [DBG] Wildcard detected, all requests with hosts will be allowed.
+2025-11-21 03:28:12.524 +01:00 [INF] Now listening on: http://localhost:5282
+2025-11-21 03:28:12.525 +01:00 [DBG] Loaded hosting startup assembly Infernity.Server
+2025-11-21 03:28:12.525 +01:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-11-21 03:28:12.525 +01:00 [INF] Hosting environment: Development
+2025-11-21 03:28:12.525 +01:00 [INF] Content root path: /media/bglueck/Data/work/Infernity/src/server/Infernity.Server
+2025-11-21 03:28:12.525 +01:00 [DBG] Hosting started
+2025-11-21 03:28:29.160 +01:00 [INF] Application is shutting down...
+2025-11-21 03:28:29.161 +01:00 [DBG] Hosting stopping
+2025-11-21 03:28:29.164 +01:00 [DBG] Hosting stopped

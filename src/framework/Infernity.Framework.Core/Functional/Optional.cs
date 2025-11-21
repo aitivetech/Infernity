@@ -140,6 +140,36 @@ public static class Optional
         {
             return ref first.HasValue ? ref first : ref second;
         }
+
+        public Optional<TResult> OfType<TResult>()
+        {
+            if (first)
+            {
+                if (first.Value is TResult result)
+                {
+                    return Optional.Some(result);
+                }
+            }
+            
+            return None<TResult>();
+        }
+        
+        public Optional<TResult> Cast<TResult>()
+        {
+            if (first)
+            {
+                if (first.Value is TResult result)
+                {
+                    return Optional.Some(result);
+                }
+                else
+                {
+                    throw new InvalidCastException($"Cannot cast {typeof(T).Name} to {typeof(TResult).Name}");
+                }
+            }
+            
+            return None<TResult>();
+        }
     }
 
     public static object NoneUntyped(Type type)

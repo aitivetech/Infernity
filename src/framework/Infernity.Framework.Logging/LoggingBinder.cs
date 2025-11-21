@@ -20,15 +20,18 @@ internal sealed class LoggingBinder : Disposable,ILoggingBinder
 {
     private readonly string _applicationId;
 
-    internal LoggingBinder(string applicationId)
+    internal LoggingBinder(string applicationId,LogEventLevel logEventLevel)
     {
         _applicationId = applicationId;
+        
         Logger = new LoggerConfiguration()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+            .MinimumLevel.Is(logEventLevel)
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .Enrich.FromLogContext()
             .Enrich.WithExceptionDetails()
             .WriteTo.Console(new RenderedCompactJsonFormatter())
             .CreateBootstrapLogger();
+        
         Log.Logger = Logger;
         
         GlobalsRegistry.Register<ILoggerFactory>(new SerilogLoggerFactory(Logger));
@@ -43,10 +46,10 @@ internal sealed class LoggingBinder : Disposable,ILoggingBinder
         services.AddSerilog((sp,lc) =>
         {
             lc.ReadFrom.Services(sp)
-                .ReadFrom.Configuration(configuration,new ConfigurationReaderOptions() { SectionName =  "Logging" })
+                .ReadFrom.Configuration(configuration,
+                    new ConfigurationReaderOptions() { SectionName = "Logging" })
                 .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails()
-                .WriteTo.Console(new RenderedCompactJsonFormatter());
+                .Enrich.WithExceptionDetails();
             
             GlobalsRegistry.Remove<ILoggerFactory>();
         });

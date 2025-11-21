@@ -56,7 +56,7 @@ internal sealed partial class PluginManager : IPluginManager
     public IReadOnlyDictionary<PluginId, IPlugin> ActivePlugins { get; }
     
     
-    [LoggerMessage(LogLevel.Debug, "Available plugins: {plugin}")]
+    [LoggerMessage(LogLevel.Debug, "Available plugin: {plugin}")]
     private static partial void LogAvailablePlugin(ILogger<PluginManager> logger,
         PluginDescription plugin);
 

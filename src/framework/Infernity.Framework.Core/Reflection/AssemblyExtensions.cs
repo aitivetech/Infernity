@@ -19,5 +19,19 @@ public static class AssemblyExtensions
                 yield return (T)Activator.CreateInstance(type)!;
             }
         }
+
+        public IEnumerable<(object instance,T attribute)> CreateInstanceMarkedWithAttribute<T>()
+            where T : System.Attribute
+        {
+            foreach (var type in assembly.GetTypes().Where(t => t.IsDefaultConstructibleClass()))
+            {
+                var attribute = type.GetCustomAttribute<T>();
+
+                if (attribute != null)
+                {
+                    yield return (Activator.CreateInstance(type)!, attribute);
+                }
+            }
+        }
     }
 }

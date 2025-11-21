@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 
+using Infernity.Framework.Configuration;
 using Infernity.Framework.Core.Reflection;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +24,8 @@ public class ServicePluginActivator : IPluginActivator
         {
             servicePlugin.RegisterServices(environment, Services);
         }
+
+        Services.AddAllConfigurationSections(assembly);
     }
 
     protected virtual void OnPostRegisterServices(

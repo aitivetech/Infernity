@@ -5,6 +5,7 @@ using FastEndpoints;
 using Infernity.Framework.Configuration;
 using Infernity.Framework.Core;
 using Infernity.Framework.Core.Exceptions;
+using Infernity.Framework.Core.Exceptions.Default;
 using Infernity.Framework.Core.Functional;
 using Infernity.Framework.Core.Patterns.Disposal;
 using Infernity.Framework.Logging;
@@ -14,12 +15,16 @@ using Infernity.Framework.Plugins.Selectors;
 using Infernity.Framework.Plugins.Web;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
+using Serilog.Events;
 
 namespace Infernity.Framework.Web;
 
-public class WebApplicationHost : Disposable,IDisposable
+public class WebApplicationHost : Disposable, IDisposable
 {
     private readonly string _applicationId;
     private readonly bool _enableMvc;
@@ -27,8 +32,10 @@ public class WebApplicationHost : Disposable,IDisposable
     private readonly ILoggingBinder _loggingBinder;
     private readonly IReadOnlyList<IPluginProvider> _pluginProviders;
     private readonly IPluginSelector _pluginSelector;
-    private Optional<IRootExceptionHandler> _rootExceptionHandler;
-    
+    private readonly WebApplicationBuilder _builder;
+    private readonly IConfiguration _configuration;
+    private Optional<IExceptionHandler> _exceptionHandler;
+
     public WebApplicationHost(
         string applicationId,
         IReadOnlyList<IPluginProvider> pluginProviders,
@@ -39,32 +46,46 @@ public class WebApplicationHost : Disposable,IDisposable
         _applicationId = applicationId;
         _enableMvc = enableMvc;
         _enableEndpoints = enableEndpoints;
-        _loggingBinder = ILoggingBinder.Create(applicationId);
-        _rootExceptionHandler = Optional.None<IRootExceptionHandler>();
+        _builder = WebApplication.CreateBuilder();
+        _loggingBinder = ILoggingBinder.Create(applicationId,
+            _builder.Environment.IsDevelopment() ? LogEventLevel.Debug : LogEventLevel.Information);
+        _configuration = _builder.CreateDefaultConfiguration(applicationId);
+        _exceptionHandler = Optional.None<IExceptionHandler>();
         _pluginProviders = pluginProviders;
         _pluginSelector = pluginSelector ?? new DelegatePluginSelector(t => true);
     }
 
-    public async Task Run(string[] arguments,CancellationToken cancellationToken = default)
+    public async Task Run(string[] arguments,
+        CancellationToken cancellationToken = default)
     {
         try
         {
-            var builder = WebApplication.CreateBuilder();
-            var application = OnConfigure(builder,out var pluginBinder);
-            
-            _rootExceptionHandler = Optional.Some(application.Services.GetRequiredService<IRootExceptionHandler>());
-    
-            OnConfigure(application,pluginBinder);
+            var application = OnConfigure(_builder,
+                _configuration,
+                out var pluginBinder);
+
+            _exceptionHandler = Optional.Some(application.Services.GetRequiredService<IExceptionHandler>());
+
+            OnConfigure(application,
+                pluginBinder);
 
             await application.RunAsync();
         }
         catch (Exception exception)
         {
             var wasHandled = false;
-            
-            if (_rootExceptionHandler)
+
+            if (_exceptionHandler)
             {
-                wasHandled = _rootExceptionHandler.Value.Handle(exception);
+                try
+                {
+                    wasHandled = _exceptionHandler.Value.Handle(exception);
+                }
+                catch (Exception innerException)
+                {
+                    _loggingBinder.Logger.Fatal(innerException,
+                        exception.Message);
+                }
             }
 
             if (!wasHandled)
@@ -75,7 +96,8 @@ public class WebApplicationHost : Disposable,IDisposable
         }
     }
 
-    protected virtual void OnConfigure(WebApplication application,IWebPluginBinder pluginBinder)
+    protected virtual void OnConfigure(WebApplication application,
+        IWebPluginBinder pluginBinder)
     {
         pluginBinder.Configure(application);
 
@@ -90,16 +112,18 @@ public class WebApplicationHost : Disposable,IDisposable
         }
     }
 
-    protected virtual WebApplication OnConfigure(WebApplicationBuilder builder,out IWebPluginBinder pluginBinder)
+    protected virtual WebApplication OnConfigure(WebApplicationBuilder builder,
+        IConfiguration configuration,
+        out IWebPluginBinder pluginBinder)
     {
-        var configuration = builder.CreateDefaultConfiguration(_applicationId);
-    
-        _loggingBinder.Apply(configuration,builder.Services);
+        _loggingBinder.Apply(configuration,
+            builder.Services);
 
-        var localPluginBinder = builder.AddPlugins(_pluginProviders, _pluginSelector);
+        var localPluginBinder = builder.AddPlugins(_pluginProviders,
+            _pluginSelector);
 
-        builder.Services.AddSingleton<IRootExceptionHandler, RootExceptionHandler>();
-        
+        builder.Services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
+
         if (_enableEndpoints)
         {
             builder.Services.AddFastEndpoints(ep =>
@@ -116,8 +140,8 @@ public class WebApplicationHost : Disposable,IDisposable
             {
                 localPluginBinder.Configure(partManager);
             });
-        }   
-        
+        }
+
         pluginBinder = localPluginBinder;
         return builder.Build();
     }
