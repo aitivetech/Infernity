@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <ItemGroup>
+        <ProjectReference
+                Include="../../tools/Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
+                OutputItemType="Analyzer"
+                ReferenceOutputAssembly="false"
+        />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="ZstdSharp.Port" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Tarz\" />
+    </ItemGroup>
+
+</Project>

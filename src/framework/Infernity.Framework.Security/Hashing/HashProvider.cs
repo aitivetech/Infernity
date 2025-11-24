@@ -9,6 +9,8 @@ public sealed class HashProvider<T>(
     RecyclableMemoryStreamManager streamManager) : IHashProvider<T>
     where T : struct, IHashValue<T>
 {
+    IHashAlgorithm<T> IHashProvider<T>.Algorithm => algorithm;
+    
     public HashBuilder<T> CreateBuilder()
     {
         return new HashBuilder<T>(algorithm,

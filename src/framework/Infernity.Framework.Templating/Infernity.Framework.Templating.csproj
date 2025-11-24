@@ -6,7 +6,10 @@
                 OutputItemType="Analyzer"
                 ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="..\Infernity.Framework.Core\Infernity.Framework.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Fluid" />
     </ItemGroup>
 
 </Project>

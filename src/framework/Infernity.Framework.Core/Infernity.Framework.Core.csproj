@@ -5,15 +5,12 @@
     </ItemGroup>
     
     <ItemGroup>
-      <Folder Include="Io\" />
-    </ItemGroup>
-    
-    <ItemGroup>
       <None Remove="Content\MimeTypes.json" />
       <AdditionalFiles Include="Content\MimeTypes.json" />
     </ItemGroup>
     
     <ItemGroup>
+      <PackageReference Include="Humanizer" />
       <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
       <PackageReference Include="Nerdbank.GitVersioning">
         <PrivateAssets>all</PrivateAssets>
