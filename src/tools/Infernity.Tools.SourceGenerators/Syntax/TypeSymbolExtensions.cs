@@ -4,62 +4,62 @@ namespace Infernity.Tools.SourceGenerators.Syntax;
 
 internal static class TypeSymbolExtensions
 {
-    internal static bool HasConstMember(this ITypeSymbol typeSymbol, string constName, bool includeBases = true)
+    extension(ITypeSymbol typeSymbol)
     {
-        return typeSymbol.HasMember(constName, symbol => symbol is IFieldSymbol { IsConst: true });
-    }
-
-    internal static ISymbol? FindConstMember(this ITypeSymbol     typeSymbol,
-                                             string               memberName,
-                                             bool                 includeBases = true)
-    {
-        return FindMember(typeSymbol,memberName,s => s is IFieldSymbol { IsConst: true }, includeBases);
-    }
-
-    internal static bool HasMember(this ITypeSymbol     typeSymbol,
-                                   string               memberName,
-                                   Func<ISymbol, bool>? predicate    = null,
-                                   bool                 includeBases = true)
-    {
-        return FindMember(typeSymbol, memberName, predicate, includeBases) != null;
-    }
-
-    internal static ISymbol? FindMember(this ITypeSymbol     typeSymbol,
-                                            string               memberName,
-                                            Func<ISymbol, bool>? predicate    = null,
-                                            bool                 includeBases = true)
-    {
-        var finalPredicate = predicate ?? (_ => true);
-
-        var result = typeSymbol
-                     .GetMembers()
-                     .FirstOrDefault(m => m.Name == memberName && finalPredicate(m));
-
-        if (result != null)
+        internal bool HasConstMember(string constName, bool includeBases = true)
         {
-            return result;
+            return typeSymbol.HasMember(constName, symbol => symbol is IFieldSymbol { IsConst: true });
         }
 
-        if (typeSymbol.BaseType != null && includeBases)
+        internal ISymbol? FindConstMember(string               memberName,
+            bool                 includeBases = true)
         {
-            return FindMember(typeSymbol.BaseType, memberName, predicate, includeBases);
+            return FindMember(typeSymbol,memberName,s => s is IFieldSymbol { IsConst: true }, includeBases);
         }
 
-        return null;
+        internal bool HasMember(string               memberName,
+            Func<ISymbol, bool>? predicate    = null,
+            bool                 includeBases = true)
+        {
+            return FindMember(typeSymbol, memberName, predicate, includeBases) != null;
+        }
+
+        internal ISymbol? FindMember(string               memberName,
+            Func<ISymbol, bool>? predicate    = null,
+            bool                 includeBases = true)
+        {
+            var finalPredicate = predicate ?? (_ => true);
+
+            var result = typeSymbol
+                .GetMembers()
+                .FirstOrDefault(m => m.Name == memberName && finalPredicate(m));
+
+            if (result != null)
+            {
+                return result;
+            }
+
+            if (typeSymbol.BaseType != null && includeBases)
+            {
+                return FindMember(typeSymbol.BaseType, memberName, predicate, includeBases);
+            }
+
+            return null;
+        }
+
+        internal string GetReferenceTypeName()
+        {
+            return typeSymbol.ToDisplayString(new SymbolDisplayFormat(SymbolDisplayGlobalNamespaceStyle.Omitted,
+                SymbolDisplayTypeQualificationStyle
+                    .NameAndContainingTypesAndNamespaces,
+                SymbolDisplayGenericsOptions.IncludeTypeParameters,
+                propertyStyle: SymbolDisplayPropertyStyle.NameOnly,
+                miscellaneousOptions:
+                SymbolDisplayMiscellaneousOptions.UseSpecialTypes
+            ));
+        }
     }
 
-
-    internal static string GetReferenceTypeName(this ITypeSymbol typeSymbol)
-    {
-        return typeSymbol.ToDisplayString(new SymbolDisplayFormat(SymbolDisplayGlobalNamespaceStyle.Omitted,
-                                                                  SymbolDisplayTypeQualificationStyle
-                                                                      .NameAndContainingTypesAndNamespaces,
-                                                                  SymbolDisplayGenericsOptions.IncludeTypeParameters,
-                                                                  propertyStyle: SymbolDisplayPropertyStyle.NameOnly,
-                                                                  miscellaneousOptions:
-                                                                  SymbolDisplayMiscellaneousOptions.UseSpecialTypes
-                                                                 ));
-    }
 
     internal static bool HasAnyBaseDeclarations(this INamedTypeSymbol typeSymbol)
     {

@@ -12,12 +12,16 @@ public sealed class BuiltinPluginProvider : IPluginProvider
 
     private sealed class Plugin : IPlugin
     {
-        internal Plugin(PluginDescription description)
+        internal Plugin(PluginDescription description,
+            Assembly assembly)
         {
             Description = description;
+            Assemblies = new HashSet<Assembly>() { assembly };
         }
 
         public PluginDescription Description { get; }
+
+        public IReadOnlySet<Assembly> Assemblies { get; }
     }
 
     public BuiltinPluginProvider(IReadOnlyList<Assembly> assemblies)
@@ -42,17 +46,17 @@ public sealed class BuiltinPluginProvider : IPluginProvider
     public IReadOnlyDictionary<PluginId, PluginDescription> Descriptions { get; }
 
     public IPlugin Load(
-        IHostEnvironment environment,
-        PluginId id,
-        IPluginActivator activator)
+        IHostApplicationBuilder applicationBuilder,
+        PluginDescription pluginDescription)
 
     {
-        var assembly = _pluginAssemblies.GetOptional(id).OrThrow(() => new PluginException($"Unknown plugin {id}"));
-        var description = Descriptions.GetOptional(id).OrThrow(() => new PluginException($"Unknown plugin {id}"));
+        var assembly = _pluginAssemblies.GetOptional(pluginDescription.Id)
+            .OrThrow(() => new PluginException($"Unknown plugin {pluginDescription.Id}"));
+        var description = Descriptions.GetOptional(pluginDescription.Id)
+            .OrThrow(() => new PluginException($"Unknown plugin {pluginDescription.Id}"));
 
-        activator.OnActivate(environment,assembly);
-
-        return new Plugin(description);
+        return new Plugin(description,
+            assembly);
     }
 
     private PluginDescription GetPluginDescription(Assembly assembly)

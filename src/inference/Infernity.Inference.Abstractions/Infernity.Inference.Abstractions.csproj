@@ -6,6 +6,7 @@
                 OutputItemType="Analyzer"
                 ReferenceOutputAssembly="false"
         />
+        <ProjectReference Include="..\..\framework\Infernity.Framework.Plugins\Infernity.Framework.Plugins.csproj" />
     </ItemGroup>
 
 </Project>

@@ -2,16 +2,17 @@ using Microsoft.Extensions.Hosting;
 
 namespace Infernity.Framework.Plugins;
 
-public interface IPluginManager
+public interface IPluginManager<TBinder>
+    where TBinder : IPluginBinder
 {
-    IReadOnlyDictionary<PluginId,IPlugin> ActivePlugins { get; }
-
-    static IPluginManager Create(
-        IHostEnvironment environment,
+    TBinder Build();
+    
+    static IPluginManager<TBinder> Create(
+        IHostApplicationBuilder applicationBuilder,
         IReadOnlyList<IPluginProvider> providers,
-        IPluginActivator activator,
+        IPluginActivator<TBinder> activator,
         IPluginSelector selector)
     {
-        return new PluginManager(environment,providers, activator, selector);
+        return new PluginManager<TBinder>(applicationBuilder,providers, activator, selector);
     }
 }

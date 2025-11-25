@@ -3,44 +3,47 @@ using System.Reflection;
 using FastEndpoints;
 
 using Infernity.Framework.Core.Collections;
+using Infernity.Framework.Core.Reflection;
+using Infernity.Framework.Plugins.Host;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Infernity.Framework.Plugins.Web;
 
-internal sealed class WebPluginBinder : IWebPluginBinder
+internal sealed class WebPluginBinder : HostPluginBinder, IWebPluginBinder
 {
-    private readonly IReadOnlyList<IWebPlugin> _webPlugins;
-    private readonly IReadOnlySet<Assembly> _webPartAssemblies;
-    private readonly IReadOnlySet<Assembly> _endpointsAssemblies;
-
-    internal WebPluginBinder(
-        IReadOnlyList<IWebPlugin> webPlugins,
-        IReadOnlySet<Assembly> webPartAssemblies,
-        IReadOnlySet<Assembly> endpointsAssemblies,
-        IReadOnlySet<Assembly> blazorAssemblies)
+    internal WebPluginBinder(IHostApplicationBuilder applicationBuilder,
+        IReadOnlyDictionary<PluginId, IPlugin> activePlugins,
+        IReadOnlySet<Assembly> assemblies) : base(applicationBuilder,
+        activePlugins,
+        assemblies)
     {
-        _webPlugins = webPlugins;
-        _webPartAssemblies = webPartAssemblies;
-        _endpointsAssemblies = endpointsAssemblies;
-        BlazorAssemblies = blazorAssemblies;
     }
 
-    public IReadOnlySet<Assembly> BlazorAssemblies { get; }
-    
-    public void Configure(WebApplication application)
+    public IReadOnlySet<Assembly> BlazorAssemblies
     {
-        foreach (var webPlugin in _webPlugins.OrderOrderableOptionally())
+        get
         {
-            webPlugin.Configure(application);
+            return FilterAssemblies(a => a.EnableBlazor);
+        }
+    }
+
+    public void Configure(IEndpointRouteBuilder routeBuilder)
+    {
+        foreach (var webPlugin in Assemblies.SelectMany(a => a.CreateInstancesImplementing<IWebPlugin>())
+                     .OrderOrderableOptionally())
+        {
+            webPlugin.Configure(routeBuilder);
         }
     }
 
     public void Configure(ApplicationPartManager partManager)
     {
-        foreach (var assembly in _webPartAssemblies)
+        foreach (var assembly in FilterAssemblies(a => a.EnableWebParts))
         {
             var partFactory = ApplicationPartFactory.GetApplicationPartFactory(assembly);
             foreach (var applicationPart in partFactory.GetApplicationParts(assembly))
@@ -53,6 +56,21 @@ internal sealed class WebPluginBinder : IWebPluginBinder
     public void Configure(EndpointDiscoveryOptions options)
     {
         options.DisableAutoDiscovery = true;
-        options.Assemblies = _endpointsAssemblies;
+        options.Assemblies = FilterAssemblies(w => w.EnableEndpoints);
+    }
+
+    private IReadOnlySet<Assembly> FilterAssemblies(Func<WebPluginAttribute,bool> predicate)
+    {
+        return Assemblies.Where(a =>
+        {
+            var attribute = a.GetCustomAttribute<WebPluginAttribute>();
+
+            if (attribute != null)
+            {
+                return predicate(attribute);
+            }
+
+            return false;
+        }).ToHashSet();
     }
 }

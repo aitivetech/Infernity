@@ -6,7 +6,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace Infernity.Framework.Plugins;
 
-public interface IPluginActivator 
+public interface IPluginActivator<out TBinder>
+    where TBinder : IPluginBinder
 {
-    void OnActivate(IHostEnvironment environment,Assembly assembly);
+    TBinder Activate(IHostApplicationBuilder applicationBuilder,
+        IReadOnlyDictionary<PluginId, IPlugin> plugins);
 }

@@ -4,6 +4,11 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="CommandDotNet" Version="8.1.1" />
+    <PackageVersion Include="CommandDotNet.DataAnnotations" Version="4.1.0" />
+    <PackageVersion Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="7.1.0" />
+    <PackageVersion Include="CommandDotNet.NameCasing" Version="5.1.0" />
+    <PackageVersion Include="CommandDotNet.Spectre" Version="4.1.0" />
     <PackageVersion Include="FastEndpoints" Version="7.1.1" />
     <PackageVersion Include="Fluid" Version="2.0.2" />
     <PackageVersion Include="Humanizer" Version="3.0.1" />
@@ -15,6 +20,7 @@
     <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
     <PackageVersion Include="Microsoft.Extensions.ObjectPool" Version="10.0.0" />

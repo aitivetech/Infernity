@@ -8,6 +8,7 @@ using Infernity.Framework.Core.Exceptions;
 using Infernity.Framework.Core.Exceptions.Default;
 using Infernity.Framework.Core.Functional;
 using Infernity.Framework.Core.Patterns.Disposal;
+using Infernity.Framework.Core.Startup;
 using Infernity.Framework.Logging;
 using Infernity.Framework.Plugins;
 using Infernity.Framework.Plugins.Providers;
@@ -15,6 +16,7 @@ using Infernity.Framework.Plugins.Selectors;
 using Infernity.Framework.Plugins.Web;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,130 +26,71 @@ using Serilog.Events;
 
 namespace Infernity.Framework.Web;
 
-public class WebApplicationHost : Disposable, IDisposable
+public class WebApplicationHost : PluginApplicationHost<IWebPluginBinder>
 {
-    private readonly string _applicationId;
     private readonly bool _enableMvc;
-    private readonly bool _enableEndpoints;
-    private readonly ILoggingBinder _loggingBinder;
-    private readonly IReadOnlyList<IPluginProvider> _pluginProviders;
-    private readonly IPluginSelector _pluginSelector;
-    private readonly WebApplicationBuilder _builder;
-    private readonly IConfiguration _configuration;
-    private Optional<IExceptionHandler> _exceptionHandler;
-
+    private readonly bool _enableFastEndpoints;
+    
     public WebApplicationHost(
         string applicationId,
+        IHostApplicationBuilder builder,
         IReadOnlyList<IPluginProvider> pluginProviders,
-        IPluginSelector? pluginSelector = null,
         bool enableMvc = true,
-        bool enableEndpoints = true)
+        bool enableFastEndpoints = true,
+        IPluginSelector? pluginSelector = null) : base(applicationId,
+        builder,
+        pluginProviders,
+        new WebPluginActivator(),
+        pluginSelector)
     {
-        _applicationId = applicationId;
         _enableMvc = enableMvc;
-        _enableEndpoints = enableEndpoints;
-        _builder = WebApplication.CreateBuilder();
-        _loggingBinder = ILoggingBinder.Create(applicationId,
-            _builder.Environment.IsDevelopment() ? LogEventLevel.Debug : LogEventLevel.Information);
-        _configuration = _builder.CreateDefaultConfiguration(applicationId);
-        _exceptionHandler = Optional.None<IExceptionHandler>();
-        _pluginProviders = pluginProviders;
-        _pluginSelector = pluginSelector ?? new DelegatePluginSelector(t => true);
+        _enableFastEndpoints = enableFastEndpoints;
     }
 
-    public async Task Run(string[] arguments,
-        CancellationToken cancellationToken = default)
+    protected override IHost OnBuildHost(IHostApplicationBuilder builder)
     {
-        try
-        {
-            var application = OnConfigure(_builder,
-                _configuration,
-                out var pluginBinder);
-
-            _exceptionHandler = Optional.Some(application.Services.GetRequiredService<IExceptionHandler>());
-
-            OnConfigure(application,
-                pluginBinder);
-
-            await application.RunAsync();
-        }
-        catch (Exception exception)
-        {
-            var wasHandled = false;
-
-            if (_exceptionHandler)
-            {
-                try
-                {
-                    wasHandled = _exceptionHandler.Value.Handle(exception);
-                }
-                catch (Exception innerException)
-                {
-                    _loggingBinder.Logger.Fatal(innerException,
-                        exception.Message);
-                }
-            }
-
-            if (!wasHandled)
-            {
-                _loggingBinder.Logger.Fatal(exception,
-                    exception.Message);
-            }
-        }
+        return ((WebApplicationBuilder)builder).Build();
     }
 
-    protected virtual void OnConfigure(WebApplication application,
-        IWebPluginBinder pluginBinder)
+    protected override IWebPluginBinder OnConfigureHostBuilder(IHostApplicationBuilder builder,
+        IConfiguration configuration)
     {
-        pluginBinder.Configure(application);
+        var pluginBinder = base.OnConfigureHostBuilder(builder, configuration);
 
-        if (_enableEndpoints)
+        if (_enableFastEndpoints)
         {
-            application.UseFastEndpoints();
+            builder.Services.AddFastEndpoints(options => pluginBinder.Configure(options));
+        }
+        
+        return pluginBinder;
+    }
+
+    protected override void OnConfigureHost(IHost host,
+        IConfiguration configuration,
+        IWebPluginBinder binder)
+    {
+        base.OnConfigureHost(host, configuration, binder);
+        
+        var webApplication = (WebApplication)host;
+        
+        binder.Configure(webApplication);
+        
+        OnConfigureWebApplication(webApplication);
+    }
+
+    protected virtual void OnConfigureWebApplication(WebApplication application)
+    {
+        if (_enableFastEndpoints)
+        {
+            application.UseFastEndpoints(config =>
+            {
+                
+            });
         }
 
         if (_enableMvc)
         {
             application.MapControllers();
         }
-    }
-
-    protected virtual WebApplication OnConfigure(WebApplicationBuilder builder,
-        IConfiguration configuration,
-        out IWebPluginBinder pluginBinder)
-    {
-        _loggingBinder.Apply(configuration,
-            builder.Services);
-
-        var localPluginBinder = builder.AddPlugins(_pluginProviders,
-            _pluginSelector);
-
-        builder.Services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
-
-        if (_enableEndpoints)
-        {
-            builder.Services.AddFastEndpoints(ep =>
-            {
-                localPluginBinder.Configure(ep);
-            });
-        }
-
-        if (_enableMvc)
-        {
-            var mvcBuilder = builder.Services.AddControllersWithViews();
-
-            mvcBuilder.ConfigureApplicationPartManager(partManager =>
-            {
-                localPluginBinder.Configure(partManager);
-            });
-        }
-
-        pluginBinder = localPluginBinder;
-        return builder.Build();
-    }
-
-    protected override void OnDispose()
-    {
-        _loggingBinder.Dispose();
     }
 }

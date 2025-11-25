@@ -52,7 +52,10 @@ public sealed class LoggerSourceGenerator : IIncrementalGenerator
 
             var namespaceName = classDeclaration.GetNamespaceName();
             var visibility = classSymbol.DeclaredAccessibility;
-            var className = classSymbol.Name;
+            var className = classSymbol.ToDisplayString(new SymbolDisplayFormat(
+                SymbolDisplayGlobalNamespaceStyle.Omitted,
+                SymbolDisplayTypeQualificationStyle.NameOnly,
+                SymbolDisplayGenericsOptions.IncludeTypeParameters));
 
             writer.WriteLine("#nullable enable");
             

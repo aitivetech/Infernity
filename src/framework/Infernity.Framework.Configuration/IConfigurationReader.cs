@@ -69,7 +69,7 @@ public static class ConfigurationReaderExtensions
 
         private static string SectionId(Type type)
         {
-            var attribute = type.GetCustomAttribute<ConfigurationSectionAttribute>();
+            var attribute = type.GetCustomAttribute<ConfigurationSectionAttribute>(true);
 
             if (attribute == null)
             {

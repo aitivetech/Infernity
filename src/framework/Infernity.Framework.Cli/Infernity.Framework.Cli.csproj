@@ -6,6 +6,19 @@
                 OutputItemType="Analyzer"
                 ReferenceOutputAssembly="false"
         />
+        <ProjectReference Include="..\Infernity.Framework.Configuration\Infernity.Framework.Configuration.csproj" />
+        <ProjectReference Include="..\Infernity.Framework.Core\Infernity.Framework.Core.csproj" />
+        <ProjectReference Include="..\Infernity.Framework.Logging\Infernity.Framework.Logging.csproj" />
+        <ProjectReference Include="..\Infernity.Framework.Plugins\Infernity.Framework.Plugins.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandDotNet" />
+      <PackageReference Include="CommandDotNet.DataAnnotations" />
+      <PackageReference Include="CommandDotNet.IoC.MicrosoftDependencyInjection" />
+      <PackageReference Include="CommandDotNet.NameCasing" />
+      <PackageReference Include="CommandDotNet.Spectre" />
+      <PackageReference Include="Microsoft.Extensions.Hosting" />
     </ItemGroup>
 
 </Project>
