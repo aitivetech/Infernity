@@ -18,13 +18,13 @@ public class CliApplicationHost<T> : PluginApplicationHost<IPluginBinder>
     private readonly AppRunner<T> _appRunner;
     
     public CliApplicationHost(string applicationId,
-        IHostApplicationBuilder builder,
         IReadOnlyList<IPluginProvider> pluginProviders,
         IPluginSelector? pluginSelector = null) : base(applicationId,
-        builder,
+        Host.CreateApplicationBuilder(),
         pluginProviders,
         new HostPluginActivator(),
-        pluginSelector)
+        pluginSelector,
+        false)
     {
         _appRunner = new AppRunner<T>();
     }

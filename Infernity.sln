@@ -70,6 +70,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Framework.Cli", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Inference.Providers.Llama", "src\inference\providers\Infernity.Inference.Providers.Llama\Infernity.Inference.Providers.Llama.csproj", "{D5FA16BD-A382-409E-986E-944BFF9BB907}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infernity.Tools.ModelPacker", "src\tools\Infernity.Tools.ModelPacker\Infernity.Tools.ModelPacker.csproj", "{EFE70E37-5E8B-4A3E-A04E-3C1041C98BA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,7 @@ Global
 		{20F82895-642A-4184-BD6F-7CE04324A56A} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
 		{98B30F29-FAB9-4301-B1C2-988CBFE82611} = {5D4B3D2D-1E20-4E9E-82F2-D322DC384D70}
 		{D5FA16BD-A382-409E-986E-944BFF9BB907} = {60DF18B0-C397-44BA-B255-0A7239DEB7FD}
+		{EFE70E37-5E8B-4A3E-A04E-3C1041C98BA5} = {94D25C2D-58D5-4C99-8219-4E25DD751B8C}
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{18FF178A-CB4F-4CD6-AF66-5C2CA4EFF875}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
@@ -190,5 +193,9 @@ Global
 		{D5FA16BD-A382-409E-986E-944BFF9BB907}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5FA16BD-A382-409E-986E-944BFF9BB907}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5FA16BD-A382-409E-986E-944BFF9BB907}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EFE70E37-5E8B-4A3E-A04E-3C1041C98BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EFE70E37-5E8B-4A3E-A04E-3C1041C98BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EFE70E37-5E8B-4A3E-A04E-3C1041C98BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EFE70E37-5E8B-4A3E-A04E-3C1041C98BA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

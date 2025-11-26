@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 using Infernity.Framework.Core.Functional;
@@ -10,12 +11,12 @@ public class PolymorphicResolverJsonConverter<TType, T>(ITypeResolver<TType> typ
     where TType : notnull
     where T : notnull
 {
-    protected override Optional<Type> GetValueType(TType type)
+    protected override Optional<Type> GetValueType(TType type,JsonElement data,JsonSerializerOptions options)
     {
         return typeResolver.Resolve(type);
     }
 
-    protected override Optional<TType> GetTypeId(T value)
+    protected override Optional<TType> GetTypeId(T value,JsonSerializerOptions options)
     {
         return typeResolver.Resolve(value.GetType());
     }
@@ -67,7 +68,7 @@ public abstract class PolymorphicJsonConverter<TType, T> : JsonConverter<T>
                 );
             }
 
-            var inputType = GetValueType(typeId)
+            var inputType = GetValueType(typeId,element,options)
                 .OrThrow(() => new JsonException($"Unknown {_typeDiscriminatorName}: {typeId}"));
 
             if (_flatten)
@@ -76,7 +77,8 @@ public abstract class PolymorphicJsonConverter<TType, T> : JsonConverter<T>
                     (T?)element.Deserialize(inputType,
                         CreateValueOptions(options,
                             typeId,
-                            inputType));
+                            inputType,
+                            element));
             }
 
             if (element.TryGetProperty(_valueName,
@@ -87,7 +89,8 @@ public abstract class PolymorphicJsonConverter<TType, T> : JsonConverter<T>
                         inputType,
                         CreateValueOptions(options,
                             typeId,
-                            inputType)
+                            inputType,
+                            element)
                     );
             }
         }
@@ -107,7 +110,7 @@ public abstract class PolymorphicJsonConverter<TType, T> : JsonConverter<T>
             return;
         }
 
-        var typeId = GetTypeId(value)
+        var typeId = GetTypeId(value,options)
             .OrThrow(() => new JsonException($"Unknown type: {value.GetType()}"));
 
         writer.WriteStartObject();
@@ -124,7 +127,8 @@ public abstract class PolymorphicJsonConverter<TType, T> : JsonConverter<T>
                 value.GetType(),
                 CreateValueOptions(options,
                     typeId,
-                    value.GetType())
+                    value.GetType(),
+                    value)
             );
 
             foreach (var property in objectElement.EnumerateObject())
@@ -141,16 +145,33 @@ public abstract class PolymorphicJsonConverter<TType, T> : JsonConverter<T>
                 value.GetType(),
                 CreateValueOptions(options,
                     typeId,
-                    value.GetType())
+                    value.GetType(),
+                    value)
             );
         }
 
         writer.WriteEndObject();
     }
 
-    protected abstract Optional<Type> GetValueType(TType type);
+    protected abstract Optional<Type> GetValueType(TType type,JsonElement data,JsonSerializerOptions options);
     
-    protected abstract Optional<TType> GetTypeId(T value);
+    protected abstract Optional<TType> GetTypeId(T value,JsonSerializerOptions options);
+
+    protected virtual JsonSerializerOptions CreateValueOptions(JsonSerializerOptions options,
+        TType discriminator,
+        Type valueType,
+        JsonElement data)
+    {
+        return CreateValueOptions(options, discriminator, valueType);
+    }
+    
+    protected virtual JsonSerializerOptions CreateValueOptions(JsonSerializerOptions options,
+        TType discriminator,
+        Type valueType,
+        T value)
+    {
+        return CreateValueOptions(options, discriminator, valueType);
+    }
     
     protected virtual JsonSerializerOptions CreateValueOptions(JsonSerializerOptions options,
         TType discriminator,

@@ -33,12 +33,11 @@ public class WebApplicationHost : PluginApplicationHost<IWebPluginBinder>
     
     public WebApplicationHost(
         string applicationId,
-        IHostApplicationBuilder builder,
         IReadOnlyList<IPluginProvider> pluginProviders,
         bool enableMvc = true,
         bool enableFastEndpoints = true,
         IPluginSelector? pluginSelector = null) : base(applicationId,
-        builder,
+        WebApplication.CreateBuilder(),
         pluginProviders,
         new WebPluginActivator(),
         pluginSelector)

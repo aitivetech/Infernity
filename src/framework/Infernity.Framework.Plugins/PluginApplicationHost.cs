@@ -1,9 +1,13 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 using Infernity.Framework.Configuration;
 using Infernity.Framework.Core.Exceptions;
 using Infernity.Framework.Core.Exceptions.Default;
 using Infernity.Framework.Core.Functional;
 using Infernity.Framework.Core.Patterns.Disposal;
 using Infernity.Framework.Core.Startup;
+using Infernity.Framework.Json;
 using Infernity.Framework.Logging;
 using Infernity.Framework.Plugins.Selectors;
 
@@ -23,45 +27,54 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
     private readonly IPluginActivator<TBinder> _pluginActivator;
     private readonly IPluginSelector _pluginSelector;
     private Optional<IExceptionHandler> _exceptionHandler;
-    
+
     protected PluginApplicationHost(
         string applicationId,
         IHostApplicationBuilder builder,
         IReadOnlyList<IPluginProvider> pluginProviders,
         IPluginActivator<TBinder> pluginActivator,
-        IPluginSelector? pluginSelector = null)
+        IPluginSelector? pluginSelector = null,
+        bool useConfigurationFiles = true)
     {
         ApplicationId = applicationId;
         Builder = builder;
-        
-        _loggingBinder = ILoggingBinder.Create(applicationId, Builder.Environment.IsDevelopment() ? LogEventLevel.Debug : LogEventLevel.Information);
-        
-        Configuration = Builder.CreateDefaultConfiguration(applicationId);
+
+        _loggingBinder = ILoggingBinder.Create(applicationId,
+            Builder.Environment.IsDevelopment() ? LogEventLevel.Debug : LogEventLevel.Information);
+
+        Configuration = Builder.CreateDefaultConfiguration(applicationId,
+            useConfigurationFiles);
         _exceptionHandler = Optional.None<IExceptionHandler>();
         _pluginProviders = pluginProviders;
         _pluginActivator = pluginActivator;
         _pluginSelector = pluginSelector ?? new DelegatePluginSelector(t => true);
     }
-    
+
     protected string ApplicationId { get; }
 
     protected IHostApplicationBuilder Builder { get; }
-    
+
     protected IConfiguration Configuration { get; }
-    
-    public async Task Run(string[] arguments,CancellationToken cancellationToken)
+
+    public async Task Run(string[] arguments,
+        CancellationToken cancellationToken)
     {
         try
         {
-            var pluginBinder =  OnConfigureHostBuilder(Builder, Configuration);
+            var pluginBinder = OnConfigureHostBuilder(Builder,
+                Configuration);
 
             using var host = OnBuildHost(Builder);
-            
-            OnConfigureHost(host, Configuration, pluginBinder);
-            
+
+            OnConfigureHost(host,
+                Configuration,
+                pluginBinder);
+
             _exceptionHandler = Optional.Some(host.Services.GetRequiredService<IExceptionHandler>());
 
-            
+            await OnRunHost(host,
+                arguments,
+                cancellationToken);
         }
         catch (Exception exception)
         {
@@ -77,19 +90,30 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         await host.Services.ExecuteStartupTasks();
         await host.RunAsync(cancellationToken);
     }
-    
+
     protected virtual TBinder OnConfigureHostBuilder(
         IHostApplicationBuilder builder,
         IConfiguration configuration)
     {
-        _loggingBinder.Apply(configuration, builder.Services);
-        
-        var pluginBinder = builder.AddPlugins(_pluginProviders, _pluginActivator,_pluginSelector);
+        _loggingBinder.Apply(configuration,
+            builder.Services);
+
+        var pluginManager = IPluginManager<TBinder>.Create(builder,
+            _pluginProviders,
+            _pluginActivator,
+            _pluginSelector);
+
+        builder.Services.AddSingleton(pluginManager);
+
+        var pluginBinder = pluginManager.Build();
         pluginBinder.Bind();
 
         builder.Services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
-        
-        return  pluginBinder;
+
+        builder.Services.AddSingleton<JsonSerializerOptions>(provider =>
+            JsonSerializerOptions.CreateDefault(provider.GetServices<JsonConverter>()));
+
+        return pluginBinder;
     }
 
     protected virtual void OnConfigureHost(
@@ -97,9 +121,8 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         IConfiguration configuration,
         TBinder binder)
     {
-        
     }
-    
+
     protected abstract IHost OnBuildHost(IHostApplicationBuilder builder);
 
     protected virtual void OnException(Exception exception)
@@ -125,7 +148,7 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
                 exception.Message);
         }
     }
-    
+
     protected override void OnDispose()
     {
         _loggingBinder.Dispose();

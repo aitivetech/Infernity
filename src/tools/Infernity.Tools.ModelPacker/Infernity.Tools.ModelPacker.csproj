@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+
     <ItemGroup>
+        <ProjectReference Include="..\..\framework\Infernity.Framework.Cli\Infernity.Framework.Cli.csproj"/>
         <ProjectReference
                 Include="../../tools/Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
                 OutputItemType="Analyzer"
                 ReferenceOutputAssembly="false"
         />
-        <ProjectReference Include="..\..\Infernity.Inference.Abstractions\Infernity.Inference.Abstractions.csproj" />
     </ItemGroup>
 
 </Project>

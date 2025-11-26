@@ -8,9 +8,8 @@ namespace Infernity.Inference.Abstractions;
 
 public sealed class InferenceHostPlugin : IHostPlugin
 {
-    public void RegisterServices(IHostEnvironment environment,
-        IServiceCollection services)
+    public void ConfigureHost(IHostApplicationBuilder applicationBuilder)
     {
-       
+        
     }
 }

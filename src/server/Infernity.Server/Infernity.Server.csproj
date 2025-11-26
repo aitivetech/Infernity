@@ -3,5 +3,10 @@
     <ProjectReference Include="..\..\framework\Infernity.Framework.Logging\Infernity.Framework.Logging.csproj" />
     <ProjectReference Include="..\..\framework\Infernity.Framework.Plugins.Web\Infernity.Framework.Plugins.Web.csproj" />
     <ProjectReference Include="..\..\framework\Infernity.Framework.Web\Infernity.Framework.Web.csproj" />
+      <ProjectReference
+              Include="../../tools/Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
+              OutputItemType="Analyzer"
+              ReferenceOutputAssembly="false"
+      />
   </ItemGroup>
 </Project>

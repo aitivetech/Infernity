@@ -7,6 +7,27 @@ namespace Infernity.Framework.Json;
 
 public static class JsonSerializerOptionsExtensions
 {
+    extension(JsonSerializerOptions){
+        public static JsonSerializerOptions CreateDefault(IEnumerable<JsonConverter> converters)
+        {
+            var newOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+
+            newOptions.Converters.AddAll(converters);
+            newOptions.AllowOutOfOrderMetadataProperties = true;
+            newOptions.NumberHandling = JsonNumberHandling.AllowReadingFromString;
+            newOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            newOptions.PropertyNameCaseInsensitive = true;
+            newOptions.RespectNullableAnnotations = true;
+            newOptions.WriteIndented = true;
+            newOptions.UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement;
+            newOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip;
+            newOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+            newOptions.MakeReadOnly();
+            
+            return newOptions;
+        }
+    }
+    
     extension(JsonSerializerOptions options)
     {
         public JsonSerializerOptions WithConverters(JsonConverter converter,

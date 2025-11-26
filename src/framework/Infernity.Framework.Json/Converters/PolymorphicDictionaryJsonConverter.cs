@@ -9,7 +9,7 @@ namespace Infernity.Framework.Json.Converters;
 public class PolymorphicResolverDictionaryJsonConverter<TType, T>(ITypeResolver<TType> typeResolver) : PolymorphicDictionaryJsonConverter<TType, T> 
     where TType : notnull
 {
-    protected override Optional<Type> GetValueType(TType type)
+    protected override Optional<Type> GetValueType(TType type,JsonElement data,JsonSerializerOptions options)
     {
         return typeResolver.Resolve(type);
     }
@@ -42,13 +42,13 @@ public abstract class PolymorphicDictionaryJsonConverter<TType, T> : JsonConvert
 
             if (typeId != null)
             {
-                var inputType = GetValueType(typeId)
+                var inputType = GetValueType(typeId,propertyElement.Value,options)
                     .OrThrow(() => new JsonException($"Unknown type id: {typeId}"));
 
                 if (element.Deserialize(inputType,
                         CreateValueOptions(options,
                             typeId,
-                            inputType)) is T value)
+                            inputType,propertyElement.Value)) is T value)
                 {
                     result.Add(typeId,
                         value);
@@ -89,7 +89,8 @@ public abstract class PolymorphicDictionaryJsonConverter<TType, T> : JsonConvert
                     entry.Value.GetType(),
                     CreateValueOptions(options,
                         entry.Key,
-                        entry.Value.GetType()));
+                        entry.Value.GetType(),
+                        entry.Value));
             }
             else
             {
@@ -100,7 +101,23 @@ public abstract class PolymorphicDictionaryJsonConverter<TType, T> : JsonConvert
         writer.WriteEndObject();
     }
 
-    protected abstract Optional<Type> GetValueType(TType type);
+    protected abstract Optional<Type> GetValueType(TType type,JsonElement data,JsonSerializerOptions options);
+    
+    protected virtual JsonSerializerOptions CreateValueOptions(JsonSerializerOptions options,
+        TType discriminator,
+        Type valueType,
+        JsonElement data)
+    {
+        return CreateValueOptions(options, discriminator, valueType);
+    }
+    
+    protected virtual JsonSerializerOptions CreateValueOptions(JsonSerializerOptions options,
+        TType discriminator,
+        Type valueType,
+        T value)
+    {
+        return CreateValueOptions(options, discriminator, valueType);
+    }
     
     protected virtual JsonSerializerOptions CreateValueOptions(JsonSerializerOptions options,
         TType discriminator,

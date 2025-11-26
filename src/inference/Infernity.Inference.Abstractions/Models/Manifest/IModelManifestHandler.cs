@@ -2,7 +2,9 @@ namespace Infernity.Inference.Abstractions.Models.Manifest;
 
 public interface IModelManifestHandler
 { 
-   Type GetManifestType(ModelInfo modelInfo);
+   Type GetType(ModelInfo modelInfo);
    
+   Type GetTaskType(ModelInfo modelInfo,InferenceTaskType taskType);
    
+   ModelManifest CreateDefault(ModelInfo modelInfo);
 }
