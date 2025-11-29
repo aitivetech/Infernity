@@ -117,6 +117,7 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
         writer.WriteLine("#nullable enable");
         writer.WriteLine("using System;");
         writer.WriteLine("using System.ComponentModel;");
+        writer.WriteLine("using System.Numerics;");
         writer.WriteLine("using Infernity.Framework.Json.Converters;");
         writer.WriteLine("using Infernity.Framework.Core.Reflection;");
 
@@ -143,7 +144,7 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
 
         writer.WriteLine($"[TypeConverter(typeof({className}TypeConverter))]");
         writer.WriteLine(
-            $"{visibility.ToString().ToLowerInvariant()} readonly partial record struct {className} : IParsable<{className}>,IComparable<{className}>{hashBase}"
+            $"{visibility.ToString().ToLowerInvariant()} readonly partial record struct {className} : IParsable<{className}>,IComparable<{className}>{hashBase},IEqualityOperators<{className},{className},bool>"
         );
         writer.OpenBlock();
 
@@ -165,7 +166,7 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
 
             writer.WriteEmptyLines(1);
         }
-        
+
         AddImplicitConversions(writer,
             className,
             valueName,

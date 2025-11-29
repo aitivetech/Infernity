@@ -8,7 +8,10 @@ using Infernity.Framework.Plugins;
 using Infernity.Framework.Plugins.Host;
 
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+using Spectre.Console;
 
 namespace Infernity.Framework.Cli;
 
@@ -16,9 +19,11 @@ public class CliApplicationHost<T> : PluginApplicationHost<IPluginBinder>
     where T : class
 {
     private readonly AppRunner<T> _appRunner;
+    private readonly Action<IHost,AppConfigBuilder> _configure;
     
     public CliApplicationHost(string applicationId,
         IReadOnlyList<IPluginProvider> pluginProviders,
+        Action<IHost,AppConfigBuilder>? configure = null,
         IPluginSelector? pluginSelector = null) : base(applicationId,
         Host.CreateApplicationBuilder(),
         pluginProviders,
@@ -27,6 +32,7 @@ public class CliApplicationHost<T> : PluginApplicationHost<IPluginBinder>
         false)
     {
         _appRunner = new AppRunner<T>();
+        _configure = configure ??  ((host, appConfigBuilder) => { });
     }
 
     protected override async Task OnRunHost(IHost host,
@@ -45,14 +51,23 @@ public class CliApplicationHost<T> : PluginApplicationHost<IPluginBinder>
         _appRunner
             .UseDefaultMiddleware()
             .UseMicrosoftDependencyInjection(host.Services)
-            .UseTypoSuggestions()
             .UseDataAnnotationValidations()
             .UseNameCasing(Case.CamelCase)
-            .UseSpectreAnsiConsole();
+            .UseSpectreAnsiConsole()
+            .Configure(b => b.AppSettings.Arguments.DefaultArgumentMode = ArgumentMode.Option)
+            .Configure(b => _configure(host, b));
     }
 
     protected override IHost OnBuildHost(IHostApplicationBuilder builder)
     {
         return ((HostApplicationBuilder)builder).Build();
+    }
+
+    protected override void OnRegisterSystemServices(IHostApplicationBuilder builder,
+        IServiceCollection services)
+    {
+        base.OnRegisterSystemServices(builder, services);
+
+        services.AddSingleton<T>();
     }
 }

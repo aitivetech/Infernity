@@ -6,7 +6,7 @@ using Infernity.Framework.Web;
 
 var builtInPluginProvider = new BuiltinPluginProvider([Assembly.GetExecutingAssembly()]);
 
-using var host = new WebApplicationHost(ApplicationInfo.Id,
+using var host = new WebApplicationHost(ApplicationSuiteInfo.Id,
     [builtInPluginProvider]);
 
 await host.Run(args,CancellationToken.None);

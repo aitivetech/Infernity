@@ -33,7 +33,7 @@ public abstract class StringProxyJsonConverter<T> : JsonConverter<T>
         writer.WritePropertyName(ToString(value));
     }
     
-    protected abstract bool TryParse(string value,[NotNullWhen(true)] out T? metadataTagType);
+    protected abstract bool TryParse(string value,[NotNullWhen(true)] out T? parsedValue);
     
     protected abstract string ToString(T value);
 }

@@ -22,7 +22,6 @@ public static class JsonSerializerOptionsExtensions
             newOptions.UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement;
             newOptions.UnmappedMemberHandling = JsonUnmappedMemberHandling.Skip;
             newOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            newOptions.MakeReadOnly();
             
             return newOptions;
         }

@@ -6,5 +6,5 @@ public interface IModelAnalyzer
 {
     bool AppliesTo(DirectoryInfo directoryInfo);
     
-    ModelManifest Analyze(DirectoryInfo directoryInfo);
+    ModelManifest Analyze(DirectoryInfo directoryInfo,ModelInfo modelInfo);
 }

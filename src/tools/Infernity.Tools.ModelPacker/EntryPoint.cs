@@ -3,10 +3,20 @@
 using Infernity.Framework.Cli;
 using Infernity.Framework.Core;
 using Infernity.Framework.Plugins.Providers;
+using Infernity.Inference.Abstractions;
+using Infernity.Inference.Packaging.Builder;
+using Infernity.Inference.Providers.Llama;
 using Infernity.Tools.ModelPacker;
 
-var builtInPluginProvider = new BuiltinPluginProvider([Assembly.GetExecutingAssembly()]);
+var builtInPluginProvider = new BuiltinPluginProvider([
+    Assembly.GetExecutingAssembly(), typeof(IInferenceProvider).Assembly, typeof(LLamaModelManifestHandler).Assembly,
+    typeof(ModelPackageBuilder).Assembly
+]);
 
+using var host = new CliApplicationHost<RootCommands>(ApplicationSuiteInfo.Id,
+    [builtInPluginProvider],
+    ((host,
+        builder) => builder.AppSettings.Help.UsageAppName = ApplicationInfo.Name));
 
-using var host = new CliApplicationHost<RootCommands>(ApplicationInfo.Id,[builtInPluginProvider]);
-
+await host.Run(args,
+    CancellationToken.None);

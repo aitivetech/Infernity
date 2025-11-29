@@ -5,15 +5,19 @@ using Infernity.Framework.Configuration;
 using Infernity.Framework.Core.Exceptions;
 using Infernity.Framework.Core.Exceptions.Default;
 using Infernity.Framework.Core.Functional;
+using Infernity.Framework.Core.Patterns;
 using Infernity.Framework.Core.Patterns.Disposal;
 using Infernity.Framework.Core.Startup;
 using Infernity.Framework.Json;
+using Infernity.Framework.Json.Converters;
 using Infernity.Framework.Logging;
 using Infernity.Framework.Plugins.Selectors;
+using Infernity.Framework.Security.Hashing;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IO;
 
 using Serilog.Events;
 
@@ -71,7 +75,8 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
                 pluginBinder);
 
             _exceptionHandler = Optional.Some(host.Services.GetRequiredService<IExceptionHandler>());
-
+            GlobalsRegistry.Register<IServiceProvider>(host.Services);
+            
             await OnRunHost(host,
                 arguments,
                 cancellationToken);
@@ -108,10 +113,8 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         var pluginBinder = pluginManager.Build();
         pluginBinder.Bind();
 
-        builder.Services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
-
-        builder.Services.AddSingleton<JsonSerializerOptions>(provider =>
-            JsonSerializerOptions.CreateDefault(provider.GetServices<JsonConverter>()));
+        OnRegisterSystemServices(builder,
+            builder.Services);
 
         return pluginBinder;
     }
@@ -152,5 +155,36 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
     protected override void OnDispose()
     {
         _loggingBinder.Dispose();
+    }
+
+    protected virtual void OnRegisterSystemServices(IHostApplicationBuilder builder,
+        IServiceCollection services)
+    {
+        services.AddSingleton<IExceptionHandler, DefaultExceptionHandler>();
+
+        services.AddSingleton<JsonSerializerOptions>(provider =>
+            JsonSerializerOptions.CreateDefault(provider.GetServices<JsonConverter>()));
+
+        services.AddSingleton<RecyclableMemoryStreamManager>(sp => new RecyclableMemoryStreamManager());
+        services.AddSingleton<IHashAlgorithm<Sha256Value>, Sha256ClrHashAlgorithm>();
+        services.AddSingleton<IHashAlgorithm<Sha1Value>, Sha1ClrHashAlgorithm>();
+
+        services.AddSingleton<IHashProvider<Sha256Value>, HashProvider<Sha256Value>>();
+        services.AddSingleton<IHashProvider<Sha1Value>, HashProvider<Sha1Value>>();
+
+        services.AddSingleton<JsonConverter>(new StringJsonConverter<Sha256Value>());
+        services.AddSingleton<JsonConverter>(new StringJsonConverter<Sha1Value>());
+        services.AddSingleton<JsonConverter>(new OptionalJsonConverterFactory());
+        services.AddSingleton<JsonConverter>(new ErrorJsonConverterFactory());
+        services.AddSingleton<JsonConverter>(new MimeTypeJsonConverter());
+        services.AddSingleton<JsonConverter>(new ResultJsonConverterFactory());
+        services.AddSingleton<JsonConverter>(new FlagsEnumArrayJsonConverterFactory());
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<DirectoryInfo>(
+            d => new DirectoryInfo(d),
+            d => d.FullName));
+
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<FileInfo>(
+            d => new FileInfo(d),
+            d => d.FullName));
     }
 }

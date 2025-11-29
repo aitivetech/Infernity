@@ -6,6 +6,7 @@
         <ProjectReference Include="..\Infernity.Framework.Core\Infernity.Framework.Core.csproj" />
         <ProjectReference Include="..\Infernity.Framework.Json\Infernity.Framework.Json.csproj" />
         <ProjectReference Include="..\Infernity.Framework.Logging\Infernity.Framework.Logging.csproj" />
+        <ProjectReference Include="..\Infernity.Framework.Security\Infernity.Framework.Security.csproj" />
     </ItemGroup>
 
     <ItemGroup>

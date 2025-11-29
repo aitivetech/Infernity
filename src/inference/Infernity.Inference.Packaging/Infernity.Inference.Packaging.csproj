@@ -6,6 +6,9 @@
                 OutputItemType="Analyzer"
                 ReferenceOutputAssembly="false"
         />
+        <ProjectReference Include="..\..\framework\Infernity.Framework.Compression\Infernity.Framework.Compression.csproj" />
+        <ProjectReference Include="..\..\framework\Infernity.Framework.Security\Infernity.Framework.Security.csproj" />
+        <ProjectReference Include="..\..\framework\Infernity.Framework.Templating\Infernity.Framework.Templating.csproj" />
         <ProjectReference Include="..\Infernity.Inference.Abstractions\Infernity.Inference.Abstractions.csproj" />
     </ItemGroup>
 

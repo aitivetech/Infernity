@@ -7,10 +7,17 @@
     <ItemGroup>
         <ProjectReference Include="..\..\framework\Infernity.Framework.Cli\Infernity.Framework.Cli.csproj"/>
         <ProjectReference
-                Include="../../tools/Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
+                Include="../Infernity.Tools.SourceGenerators/Infernity.Tools.SourceGenerators.csproj"
                 OutputItemType="Analyzer"
                 ReferenceOutputAssembly="false"
         />
+        <ProjectReference Include="..\..\inference\Infernity.Inference.Abstractions\Infernity.Inference.Abstractions.csproj" />
+        <ProjectReference Include="..\..\inference\Infernity.Inference.Packaging\Infernity.Inference.Packaging.csproj" />
+        <ProjectReference Include="..\..\inference\providers\Infernity.Inference.Providers.Llama\Infernity.Inference.Providers.Llama.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="CommandDotNet" />
     </ItemGroup>
 
 </Project>

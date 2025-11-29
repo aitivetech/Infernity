@@ -9,13 +9,13 @@ public sealed class MimeTypeJsonConverter : StringProxyJsonConverter<MimeType>
 {
     protected override bool TryParse(
         string value,
-        [NotNullWhen(true)] out MimeType? metadataTagType
+        [NotNullWhen(true)] out MimeType? parsedValue
     )
     {
         var result = MimeTypes.GetById(value);
         if (result)
         {
-            metadataTagType = result.Value;
+            parsedValue = result.Value;
             return true;
         }
 
@@ -23,11 +23,11 @@ public sealed class MimeTypeJsonConverter : StringProxyJsonConverter<MimeType>
 
         if (result)
         {
-            metadataTagType = result.Value;
+            parsedValue = result.Value;
             return true;
         }
 
-        metadataTagType = null;
+        parsedValue = null;
         return false;
     }
 
