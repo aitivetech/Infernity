@@ -7,12 +7,12 @@ namespace Infernity.Inference.Abstractions.Models.Manifest.Serialization;
 
 public sealed class ModelManifestTaskJsonConverter : PolymorphicDictionaryJsonConverter<InferenceTaskType,ModelManifestTask>
 {
-    private readonly ModelInfo _modelInfo;
+    private readonly ModelIdentity _modelIdentity;
     private readonly IModelManifestHandler _modelManifestHandler;
 
-    public ModelManifestTaskJsonConverter(ModelInfo modelInfo,IModelManifestHandler modelManifestHandler)
+    public ModelManifestTaskJsonConverter(ModelIdentity modelIdentity,IModelManifestHandler modelManifestHandler)
     {
-        _modelInfo = modelInfo;
+        _modelIdentity = modelIdentity;
         _modelManifestHandler = modelManifestHandler;
     }
 
@@ -20,7 +20,7 @@ public sealed class ModelManifestTaskJsonConverter : PolymorphicDictionaryJsonCo
         JsonElement data,
         JsonSerializerOptions options)
     {
-        return _modelManifestHandler.GetTaskType(_modelInfo,
+        return _modelManifestHandler.GetTaskType(_modelIdentity,
             type);
     }
 }

@@ -64,7 +64,6 @@ public class FlagsEnumArrayConverter<T> : JsonConverter<T> where T : struct, Enu
         }
     }
 
-
     public override T Read(ref Utf8JsonReader reader,
         Type typeToConvert,
         JsonSerializerOptions options)

@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="BaGetter.Protocol" />
       <PackageReference Include="NuGet.Protocol" />
     </ItemGroup>
 

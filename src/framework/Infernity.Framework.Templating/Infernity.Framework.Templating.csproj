@@ -8,4 +8,8 @@
         />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Fluid.Core" />
+    </ItemGroup>
+
 </Project>

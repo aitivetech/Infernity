@@ -2,6 +2,8 @@ using Infernity.Inference.Abstractions;
 using Infernity.Inference.Abstractions.Models.Configuration;
 using Infernity.Inference.Abstractions.Models.Manifest;
 
+using LLama.Native;
+
 namespace Infernity.Inference.Providers.Llama;
 
 public class LlamaModelConfigurationHandler : IModelConfigurationHandler

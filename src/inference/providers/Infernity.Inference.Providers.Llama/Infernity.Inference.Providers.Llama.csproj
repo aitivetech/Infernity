@@ -9,4 +9,11 @@
         <ProjectReference Include="..\..\Infernity.Inference.Abstractions\Infernity.Inference.Abstractions.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="LLamaSharp" />
+      <PackageReference Include="LLamaSharp.Backend.Cpu" />
+      <PackageReference Include="LLamaSharp.Backend.Cuda12" />
+      <PackageReference Include="LLamaSharp.Backend.Vulkan" />
+    </ItemGroup>
+
 </Project>

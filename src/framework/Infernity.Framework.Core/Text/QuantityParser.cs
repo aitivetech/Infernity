@@ -322,10 +322,10 @@ internal static class QuantityParserCore
 
                 if (divided >= 10)
                 {
-                    return $"{sign}{divided:F1}{suffix}";
+                    return $"{sign}{divided:F0}{suffix}";
                 }
 
-                return $"{sign}{divided:F2}{suffix}";
+                return $"{sign}{divided:F0}{suffix}";
             }
         }
 

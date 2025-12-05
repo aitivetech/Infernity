@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -5,9 +6,13 @@ using Infernity.Framework.Configuration;
 using Infernity.Framework.Core.Exceptions;
 using Infernity.Framework.Core.Exceptions.Default;
 using Infernity.Framework.Core.Functional;
+using Infernity.Framework.Core.Io.Paths;
 using Infernity.Framework.Core.Patterns;
 using Infernity.Framework.Core.Patterns.Disposal;
 using Infernity.Framework.Core.Startup;
+using Infernity.Framework.Core.Versioning;
+using Infernity.Framework.Downloading;
+using Infernity.Framework.Downloading.Default;
 using Infernity.Framework.Json;
 using Infernity.Framework.Json.Converters;
 using Infernity.Framework.Logging;
@@ -37,13 +42,14 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         IHostApplicationBuilder builder,
         IReadOnlyList<IPluginProvider> pluginProviders,
         IPluginActivator<TBinder> pluginActivator,
+        Func<string,LogEventLevel,ILoggingBinder> loggingBinderFactory,
         IPluginSelector? pluginSelector = null,
         bool useConfigurationFiles = true)
     {
         ApplicationId = applicationId;
         Builder = builder;
 
-        _loggingBinder = ILoggingBinder.Create(applicationId,
+        _loggingBinder = loggingBinderFactory(applicationId,
             Builder.Environment.IsDevelopment() ? LogEventLevel.Debug : LogEventLevel.Information);
 
         Configuration = Builder.CreateDefaultConfiguration(applicationId,
@@ -149,7 +155,7 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         {
             _loggingBinder.Logger.Fatal(exception,
                 exception.Message);
-        }
+        }       
     }
 
     protected override void OnDispose()
@@ -186,5 +192,12 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<FileInfo>(
             d => new FileInfo(d),
             d => d.FullName));
+        
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<CultureInfo>(d =>  new CultureInfo(d),c => c.Name));
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<RegionInfo>(d => new RegionInfo(d),d => d.TwoLetterISORegionName.ToLowerInvariant()));
+
+        services.AddSingleton<JsonConverter>(new StringJsonConverter<SemanticVersion>());
+        
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<PurePosixPath>(d =>  new PurePosixPath(d),d => d.ToPosix()));
     }
 }

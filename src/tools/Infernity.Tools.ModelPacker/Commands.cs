@@ -3,7 +3,8 @@ using CommandDotNet;
 using Infernity.Framework.Core.Functional;
 using Infernity.Framework.Core.Patterns;
 using Infernity.Inference.Abstractions;
-using Infernity.Inference.Packaging.Builder;
+using Infernity.Inference.Packaging;
+using Infernity.Inference.Packaging.Nuget;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,19 +21,28 @@ public sealed class RootCommands
         _serviceProvider = serviceProvider;
     }
 
+    /**
+init
+--inputDirectory
+/media/bglueck/Data/work/lm_studio/models/lmstudio-community/gpt-oss-20b-GGUF/
+--outputDirectory
+/media/bglueck/Data/temp/modelpacks/test1
+     */
     [Command(Description =
         "Takes an input model directory, packs it, and produces a manifest and nuspec file to be edited")]
     public async Task Init(IConsole console,
         DirectoryInfo inputDirectory,
         DirectoryInfo outputDirectory,
-        int compressionLevel = 22,
+        int compressionLevel = 7,
         // Enable on new release of CommandDotNet
         //[DescriptionMethod(nameof(GetAvailableInferenceProviders))]
         InferenceProviderId? provider = null,
         CancellationToken cancellationToken = default)
     {
-        var builder = _serviceProvider.GetRequiredService<ModelPackageBuilder>();
-        await builder.Initialize(inputDirectory,
+        var builder = _serviceProvider.GetRequiredService<NugetModelPackageBuilder>();
+        
+        await builder.Initialize(
+            inputDirectory,
             outputDirectory,
             console.Out,
             provider.ToOptional(),
@@ -41,10 +51,19 @@ public sealed class RootCommands
     }
 
     [Command(Description =
-        "Takes an input directory containing a model manifest and nuspec files and create the final package")]
-    public async Task Pack(DirectoryInfo inputDirectory,
-        DirectoryInfo outputDirectory)
+        "Takes an input directory containing a model manifest create the final package")]
+    public async Task Pack(
+        IConsole console,
+        DirectoryInfo inputDirectory,
+        DirectoryInfo? outputDirectory = null,
+        CancellationToken cancellationToken = default)
     {
+        var builder = _serviceProvider.GetRequiredService<NugetModelPackageBuilder>();
+
+        await builder.CreateModelPackage(inputDirectory,
+            outputDirectory.NullableAsOptional(),
+            console.Out,
+            cancellationToken);
     }
 
     public static string GetAvailableInferenceProviders()

@@ -16,47 +16,63 @@ using ILogger = Serilog.ILogger;
 
 namespace Infernity.Framework.Logging;
 
-internal sealed class LoggingBinder : Disposable,ILoggingBinder
+public abstract class LoggingBinder : Disposable, ILoggingBinder
 {
     private readonly string _applicationId;
+    private readonly LogEventLevel _minimumLevel;
 
-    internal LoggingBinder(string applicationId,LogEventLevel logEventLevel)
+    internal LoggingBinder(string applicationId,
+        LogEventLevel minimumLevel)
     {
         _applicationId = applicationId;
-        
-        Logger = new LoggerConfiguration()
-            .MinimumLevel.Is(logEventLevel)
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .Enrich.WithExceptionDetails()
-            .WriteTo.Console(new RenderedCompactJsonFormatter())
-            .CreateBootstrapLogger();
-        
+        _minimumLevel = minimumLevel;
+
+        var baseConfiguration = new LoggerConfiguration();
+        ApplyLoggerDefaults(baseConfiguration,
+            minimumLevel);
+        Logger = baseConfiguration.CreateBootstrapLogger();
         Log.Logger = Logger;
-        
+
         GlobalsRegistry.Register<ILoggerFactory>(new SerilogLoggerFactory(Logger));
     }
-    
+
     public ILogger Logger { get; }
 
     public void Apply(
         IConfiguration configuration,
         IServiceCollection services)
     {
-        services.AddSerilog((sp,lc) =>
+        services.AddSerilog((sp,
+            lc) =>
         {
-            lc.ReadFrom.Services(sp)
-                .ReadFrom.Configuration(configuration,
-                    new ConfigurationReaderOptions() { SectionName = "Logging" })
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails();
-            
+            OnConfigureFinalLogger(sp,
+                configuration,
+                lc,
+                _minimumLevel);
+
             GlobalsRegistry.Remove<ILoggerFactory>();
         });
     }
-    
+
     protected override void OnDispose()
     {
         Log.CloseAndFlush();
+    }
+
+    protected abstract void OnConfigureFinalLogger(
+        IServiceProvider serviceProvider,
+        IConfiguration configuration,
+        LoggerConfiguration loggerConfiguration,
+        LogEventLevel minimumLevel);
+
+    protected static void ApplyLoggerDefaults(LoggerConfiguration loggerConfiguration,
+        LogEventLevel minimumLevel)
+    {
+        loggerConfiguration.MinimumLevel.Is(minimumLevel)
+            .MinimumLevel.Override("Microsoft",
+                LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithExceptionDetails()
+            .WriteTo.Console(new RenderedCompactJsonFormatter());
     }
 }

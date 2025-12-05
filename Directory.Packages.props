@@ -4,6 +4,7 @@
     <CentralPackageTransitivePinningEnabled>false</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <PackageVersion Include="BaGetter.Protocol" Version="1.6.4" />
     <PackageVersion Include="CommandDotNet" Version="8.1.1" />
     <PackageVersion Include="CommandDotNet.DataAnnotations" Version="4.1.0" />
     <PackageVersion Include="CommandDotNet.IoC.MicrosoftDependencyInjection" Version="7.1.0" />
@@ -11,7 +12,13 @@
     <PackageVersion Include="CommandDotNet.Spectre" Version="4.1.0" />
     <PackageVersion Include="FastEndpoints" Version="7.1.1" />
     <PackageVersion Include="Fluid" Version="2.0.2" />
+    <PackageVersion Include="Fluid.Core" Version="2.31.0" />
     <PackageVersion Include="Humanizer" Version="3.0.1" />
+    <PackageVersion Include="LLamaSharp" Version="0.25.0" />
+    <PackageVersion Include="LLamaSharp.Backend.Cpu" Version="0.25.0" />
+    <PackageVersion Include="LLamaSharp.Backend.Cuda12" Version="0.25.0" />
+    <PackageVersion Include="LLamaSharp.Backend.Cuda12.Linux" Version="0.25.0" />
+    <PackageVersion Include="LLamaSharp.Backend.Vulkan" Version="0.25.0" />
     <PackageVersion Include="Microsoft.Build.Utilities.Core" Version="18.0.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />

@@ -13,10 +13,5 @@ public interface ILoggingBinder : IDisposable
 {
     ILogger Logger { get; }
     
-    void Apply(IConfiguration configuration,IServiceCollection services);
-
-    static ILoggingBinder Create(string applicationId,LogEventLevel minimumLevel)
-    {
-        return new LoggingBinder(applicationId,minimumLevel);
-    }
+    void Apply(IConfiguration configuration,IServiceCollection service);
 }

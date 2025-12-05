@@ -4,6 +4,7 @@ using CommandDotNet.IoC.MicrosoftDependencyInjection;
 using CommandDotNet.NameCasing;
 using CommandDotNet.Spectre;
 
+using Infernity.Framework.Logging;
 using Infernity.Framework.Plugins;
 using Infernity.Framework.Plugins.Host;
 
@@ -28,6 +29,7 @@ public class CliApplicationHost<T> : PluginApplicationHost<IPluginBinder>
         Host.CreateApplicationBuilder(),
         pluginProviders,
         new HostPluginActivator(),
+        ((s, level) => new DefaultLoggingBinder(s, level)),
         pluginSelector,
         false)
     {

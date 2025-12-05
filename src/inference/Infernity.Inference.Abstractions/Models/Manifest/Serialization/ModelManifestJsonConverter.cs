@@ -56,14 +56,14 @@ public sealed class ModelManifestJsonConverter : PolymorphicJsonConverter<Infere
         ModelManifest value)
     {
         return options.WithConverters([
-            new ModelManifestTaskJsonConverter(value.Info,
+            new ModelManifestTaskJsonConverter(value.Identity,
                 _modelManifestHandlers[discriminator])
         ]);
     }
 
-    private ModelInfo ReadModelInfo(JsonElement data,
+    private ModelIdentity ReadModelInfo(JsonElement data,
         JsonSerializerOptions options)
     {
-        return data.Deserialize<ModelInfo>(options) ?? throw new JsonException();
+        return data.Deserialize<ModelIdentity>(options) ?? throw new JsonException();
     }
 }

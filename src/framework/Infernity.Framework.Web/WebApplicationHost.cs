@@ -40,6 +40,7 @@ public class WebApplicationHost : PluginApplicationHost<IWebPluginBinder>
         WebApplication.CreateBuilder(),
         pluginProviders,
         new WebPluginActivator(),
+        ((id, level) =>  new ConfigurationLoggingBinder(id, level)),
         pluginSelector)
     {
         _enableMvc = enableMvc;

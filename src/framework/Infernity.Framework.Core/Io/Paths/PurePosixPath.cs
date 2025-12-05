@@ -147,7 +147,7 @@ namespace Infernity.Framework.Core.Io.Paths
                 return false;
             }
         }
-
+        
         /// <inheritdoc/>
         protected override PurePosixPath PurePathFactory(string path)
         {
@@ -312,7 +312,7 @@ namespace Infernity.Framework.Core.Io.Paths
         /// <returns></returns>
         public static PurePosixPath operator +(PurePosixPath first, PurePosixPath second)
         {
-            return first.Join(second);
+            return first.Join((IPurePath)second);
         }
 
         /// <summary>

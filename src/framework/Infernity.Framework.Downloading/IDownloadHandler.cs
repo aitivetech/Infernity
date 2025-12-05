@@ -1,26 +1,20 @@
 namespace Infernity.Framework.Downloading;
 
-public enum DownloadCompletionBehavior
-{
-    None,
-    Remove,
-    Retry
-}
 
 public interface IDownloadHandler
 {
-    Task<DownloadCompletionBehavior> OnSuccess(
+    Task OnSuccess(
         IDownloadManager manager,
         IDownloadTask task,
         Stream readStream);
 
-    Task<DownloadCompletionBehavior> OnFailed(
+    Task OnFailed(
         IDownloadManager manager,
         IDownloadTask task,
         Exception ex,
         int statusCode);
 
-    Task<DownloadCompletionBehavior> OnCancelled(
+    Task OnCancelled(
         IDownloadManager manager,
         IDownloadTask task);
 

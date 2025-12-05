@@ -38,14 +38,14 @@ public static class TarZ
         await using var progressStream = new ProgressStream(compressionStream,
             progressHandler ?? _defaultProgressHandler,
             true);
-        await using var tarWriter = new TarWriter(progressStream, TarEntryFormat.Ustar, leaveOpen: true);
+        await using var tarWriter = new TarWriter(progressStream, TarEntryFormat.Pax, leaveOpen: true);
 
         foreach (var relativePath in files)
         {
             var fullPath = Path.Combine(sourcePath, relativePath);
         
             // Create entry manually to control all metadata
-            var entry = new UstarTarEntry(TarEntryType.RegularFile, relativePath)
+            var entry = new PaxTarEntry(TarEntryType.RegularFile, relativePath)
             {
                 ModificationTime = fixedTime,
                 Uid = 0,

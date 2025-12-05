@@ -37,7 +37,7 @@ public abstract class LocalModelManifest : ModelManifest
         }
         
         values.Add(Architecture);
-        values.Add(ModelQuantityParser.ToString(ParameterCount));
+        values.Add(ModelQuantityParser.ToString(ParameterCount,QuantityFormat.Compact));
         values.Add(Quantization.ToString());
         
         return string.Join("_",

@@ -22,6 +22,7 @@ internal sealed class DownloadTask : Disposable, IDownloadTask
     private readonly AsyncLock _lock;
     private readonly DownloadManager _downloadManager;
     private readonly DownloadConfiguration _configuration;
+    private readonly IDownloadStorage _storage;
     private DownloadTaskData _data;
 
     internal DownloadTask(

@@ -6,25 +6,26 @@ namespace Infernity.Inference.Providers.Llama;
 
 public sealed class LLamaModelManifestHandler : IModelManifestHandler
 {
-    public Type GetType(ModelInfo modelInfo)
+    public Type GetType(ModelIdentity modelIdentity)
     {
         return typeof(LlamaModelManifest);
     }
 
-    public Type GetTaskType(ModelInfo modelInfo,
+    public Type GetTaskType(ModelIdentity modelIdentity,
         InferenceTaskType taskType)
     {
         return typeof(LlamaModelManifestTask);
     }
 
-    public ModelManifest CreateDefault(ModelInfo modelInfo)
+    public ModelManifest CreateDefault(ModelIdentity modelIdentity)
     {
         return new LlamaModelManifest
         {
+            Version = modelIdentity.Version,
             Provider = LlamaInferenceProvider.IdConst,
-            Architecture = modelInfo.Architecture,
-            Family = modelInfo.Family,
-            SubFamily = modelInfo.SubFamily,
+            Architecture = modelIdentity.Architecture,
+            Family = modelIdentity.Family,
+            SubFamily = modelIdentity.SubFamily,
             Quantization = ModelQuantizationType.Q8K,
             Tasks = new Dictionary<InferenceTaskType, ModelManifestTask>()
         };

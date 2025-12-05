@@ -21,15 +21,18 @@ public interface IDownloadManager : IAsyncDisposable
         var result = new DownloadManager(configuration,
             hashProvider);
 
-        await foreach (var taskData in configuration.Database.EnumerateTasks().OrderBy(t => t.CreatedAt))
+        if (restore)
         {
-            if (taskData.State == DownloadTaskState.Active || taskData.State == DownloadTaskState.Queued)
+            await foreach (var taskData in configuration.Database.EnumerateTasks().OrderBy(t => t.CreatedAt))
             {
-                await result.AddTask(taskData,
-                    true);
+                if (taskData.State is DownloadTaskState.Active or DownloadTaskState.Queued)
+                {
+                    await result.AddTask(taskData,
+                        true);
+                }
             }
         }
-        
+
         return result;
     }
 }
