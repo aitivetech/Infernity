@@ -15,13 +15,25 @@ public abstract class LocalModelManifest : ModelManifest
 
     public ModelQuantizationType Quantization { get; set; }
 
+    /// <summary>
+    /// The hash of the extracted files ( sorted etc. ) for repairing corrupt
+    /// installed models
+    /// </summary>
     public Sha256Value Hash { get; set; }
-
+    
+    /// <summary>
+    /// The hash of the binary archive package.
+    /// </summary>
     public Sha256Value CompressedHash { get; set; }
-
+    
     public long Size { get; set; }
 
     public long CompressedSize { get; set; }
+    
+    /// <summary>
+    /// The signature of the compressed archive.
+    /// </summary>
+    public required string Signature { get; set; }
 
     public override ModelId GenerateId()
     {

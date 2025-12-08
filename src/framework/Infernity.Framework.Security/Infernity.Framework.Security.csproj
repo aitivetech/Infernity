@@ -7,6 +7,7 @@
                 ReferenceOutputAssembly="false"
         />
         <ProjectReference Include="..\Infernity.Framework.Core\Infernity.Framework.Core.csproj" />
+        <ProjectReference Include="..\Infernity.Framework.Json\Infernity.Framework.Json.csproj" />
     </ItemGroup>
 
     <ItemGroup>

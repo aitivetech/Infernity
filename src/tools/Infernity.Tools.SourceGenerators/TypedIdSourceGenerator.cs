@@ -17,11 +17,24 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
                                                [System.AttributeUsage(System.AttributeTargets.Struct)]
                                                internal sealed class TypedIdAttribute : System.Attribute
                                                {
-
+                                                    internal TypedIdAttribute(bool generateJsonConverter = true)
+                                                    {
+                                                    }
                                                }
                                                #endif
                                                """;
 
+    [System.AttributeUsage(System.AttributeTargets.Struct)]
+    private sealed class TypedIdAttribute : System.Attribute
+    {
+        internal TypedIdAttribute(bool generateJsonConverter = true)
+        {
+            GenerateJsonConverter = generateJsonConverter;
+        }
+        
+        internal bool GenerateJsonConverter { get; }
+    }
+    
     public void Initialize(IncrementalGeneratorInitializationContext context)
     {
         context.RegisterPostInitializationOutput(sourceContext =>
@@ -98,6 +111,8 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
             writer.WriteLine("Unable to resolve value type");
         }
 
+        var attribute = context.Attributes.First().Read<TypedIdAttribute>();
+
         var valueType = valueProperty.Item2!.GetReferenceTypeName();
         var valueName = valueProperty.Text;
 
@@ -118,7 +133,12 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
         writer.WriteLine("using System;");
         writer.WriteLine("using System.ComponentModel;");
         writer.WriteLine("using System.Numerics;");
-        writer.WriteLine("using Infernity.Framework.Json.Converters;");
+
+        if (attribute.GenerateJsonConverter)
+        {
+            writer.WriteLine("using Infernity.Framework.Json.Converters;");
+        }
+
         writer.WriteLine("using Infernity.Framework.Core.Reflection;");
 
         writer.WriteEmptyLines(1);
@@ -191,13 +211,16 @@ public class TypedIdSourceGenerator : IIncrementalGenerator
 
         writer.CloseBlock();
 
-        writer.WriteEmptyLines(2);
+        if (attribute.GenerateJsonConverter)
+        {
+            writer.WriteEmptyLines(2);
 
-        writer.WriteLine(
-            $"public sealed class {className}JsonConverter : StringJsonConverter<{className}>"
-        );
-        writer.OpenBlock();
-        writer.CloseBlock();
+            writer.WriteLine(
+                $"public sealed class {className}JsonConverter : StringJsonConverter<{className}>"
+            );
+            writer.OpenBlock();
+            writer.CloseBlock();
+        }
 
         writer.WriteEmptyLines(2);
 

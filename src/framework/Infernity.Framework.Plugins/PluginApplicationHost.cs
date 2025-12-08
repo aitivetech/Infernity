@@ -10,19 +10,20 @@ using Infernity.Framework.Core.Io.Paths;
 using Infernity.Framework.Core.Patterns;
 using Infernity.Framework.Core.Patterns.Disposal;
 using Infernity.Framework.Core.Startup;
-using Infernity.Framework.Core.Versioning;
-using Infernity.Framework.Downloading;
-using Infernity.Framework.Downloading.Default;
+using Infernity.Framework.Core.Threading;
 using Infernity.Framework.Json;
 using Infernity.Framework.Json.Converters;
 using Infernity.Framework.Logging;
 using Infernity.Framework.Plugins.Selectors;
 using Infernity.Framework.Security.Hashing;
+using Infernity.Framework.Security.Signatures;
 
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IO;
+
+using Semver;
 
 using Serilog.Events;
 
@@ -178,6 +179,11 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         services.AddSingleton<IHashProvider<Sha256Value>, HashProvider<Sha256Value>>();
         services.AddSingleton<IHashProvider<Sha1Value>, HashProvider<Sha1Value>>();
 
+        OnRegisterJsonConverters(services);
+    }
+
+    protected virtual void OnRegisterJsonConverters(IServiceCollection services)
+    {
         services.AddSingleton<JsonConverter>(new StringJsonConverter<Sha256Value>());
         services.AddSingleton<JsonConverter>(new StringJsonConverter<Sha1Value>());
         services.AddSingleton<JsonConverter>(new OptionalJsonConverterFactory());
@@ -196,8 +202,12 @@ public abstract class PluginApplicationHost<TBinder> : Disposable
         services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<CultureInfo>(d =>  new CultureInfo(d),c => c.Name));
         services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<RegionInfo>(d => new RegionInfo(d),d => d.TwoLetterISORegionName.ToLowerInvariant()));
 
-        services.AddSingleton<JsonConverter>(new StringJsonConverter<SemanticVersion>());
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<Semver.SemVersion>(d => SemVersion.Parse(d,SemVersionStyles.Any),d => d.ToString()));
+        services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<SemVersionRange>(d => SemVersionRange.Parse(d,SemVersionRangeOptions.Loose),d => d.ToString()));
         
         services.AddSingleton<JsonConverter>(new DelegateStringProxyJsonConverter<PurePosixPath>(d =>  new PurePosixPath(d),d => d.ToPosix()));
+
+        services.AddSingleton<JsonConverter>(new SignatureJsonConverter());
+        services.AddSingleton<JsonConverter>(new StringJsonConverter<ConcurrencyToken>());
     }
 }

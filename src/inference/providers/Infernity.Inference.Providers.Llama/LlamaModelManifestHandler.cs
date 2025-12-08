@@ -27,7 +27,8 @@ public sealed class LLamaModelManifestHandler : IModelManifestHandler
             Family = modelIdentity.Family,
             SubFamily = modelIdentity.SubFamily,
             Quantization = ModelQuantizationType.Q8K,
-            Tasks = new Dictionary<InferenceTaskType, ModelManifestTask>()
+            Tasks = new Dictionary<InferenceTaskType, ModelManifestTask>(),
+            Signature = string.Empty,
         };
     }
 }

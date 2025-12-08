@@ -11,7 +11,7 @@ public sealed class InferencePackagingHostPlugin : IHostPlugin
 {
     public void ConfigureHost(IHostApplicationBuilder applicationBuilder)
     {
-        applicationBuilder.Services.AddSingleton<NugetModelPackageBuilder>();
+        applicationBuilder.Services.AddSingleton<ModelPackageBuilder>();
         applicationBuilder.Services.AddSingleton<IModelFeed, NugetPackageFeed>();
     }
 }

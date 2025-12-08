@@ -1,4 +1,4 @@
-using Infernity.Framework.Core.Versioning;
+using Semver;
 
 namespace Infernity.Inference.Abstractions.Models;
 
@@ -7,12 +7,12 @@ public sealed record ModelIdentity(
     ModelFamilyId Family,
     ModelFamilyId SubFamily,
     ModelArchitectureId Architecture,
-    SemanticVersion Version)
+    SemVersion Version)
 {
     public static readonly ModelIdentity Unknown = new (
         ModelId.Unknown,
         ModelFamilyId.Unknown,
         ModelFamilyId.Unknown,
         ModelArchitectureId.Unknown,
-        new SemanticVersion(1, 0, 0));
+        SemVersion.ParsedFrom(1));
 }

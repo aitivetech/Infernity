@@ -39,7 +39,7 @@ init
         InferenceProviderId? provider = null,
         CancellationToken cancellationToken = default)
     {
-        var builder = _serviceProvider.GetRequiredService<NugetModelPackageBuilder>();
+        var builder = _serviceProvider.GetRequiredService<ModelPackageBuilder>();
         
         await builder.Initialize(
             inputDirectory,
@@ -58,7 +58,7 @@ init
         DirectoryInfo? outputDirectory = null,
         CancellationToken cancellationToken = default)
     {
-        var builder = _serviceProvider.GetRequiredService<NugetModelPackageBuilder>();
+        var builder = _serviceProvider.GetRequiredService<ModelPackageBuilder>();
 
         await builder.CreateModelPackage(inputDirectory,
             outputDirectory.NullableAsOptional(),

@@ -11,7 +11,7 @@ using Infernity.Tools.ModelPacker;
 
 var builtInPluginProvider = new BuiltinPluginProvider([
     Assembly.GetExecutingAssembly(), typeof(IInferenceProvider).Assembly, typeof(LLamaModelManifestHandler).Assembly,
-    typeof(NugetModelPackageBuilder).Assembly
+    typeof(ModelPackageBuilder).Assembly
 ]);
 
 using var host = new CliApplicationHost<RootCommands>(ApplicationSuiteInfo.Id,

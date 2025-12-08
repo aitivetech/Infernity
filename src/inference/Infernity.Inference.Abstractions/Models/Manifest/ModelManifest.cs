@@ -2,8 +2,9 @@ using System.Globalization;
 using System.Text.Json.Serialization;
 
 using Infernity.Framework.Core.Functional;
-using Infernity.Framework.Core.Versioning;
 using Infernity.Framework.Json.Dom;
+
+using Semver;
 
 namespace Infernity.Inference.Abstractions.Models.Manifest;
 
@@ -15,7 +16,7 @@ public abstract class ModelManifest : TypedJsonDocument<ModelManifest>
     public ModelId Id { get; set; } = ModelId.Unknown;
 
     [JsonPropertyOrder(BasePropertyOrder + 2)]
-    public SemanticVersion Version { get; set; } = SemanticVersion.Parse("1.0.0");
+    public SemVersion Version { get; set; } = SemVersion.ParsedFrom(1);
 
     [JsonPropertyOrder(BasePropertyOrder + 3)]
     public ModelFamilyId Family { get; set; } = ModelFamilyId.Unknown;

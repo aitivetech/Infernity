@@ -1,13 +1,14 @@
 using Infernity.Framework.Core.Data;
-using Infernity.Framework.Core.Functional;
-using Infernity.Framework.Core.Versioning;
+using Infernity.Inference.Abstractions.Models.Manifest;
 
 namespace Infernity.Inference.Abstractions.Models;
 
-public sealed record ModelFeedQuery();
-
-public interface IModelFeed : IOffsetQueryHandler<ModelDescription, ModelFeedQuery>,IReadHandler<VersionedModelId,ModelDescription>
+public interface IModelFeed
 {
+    Task<IReadOnlyDictionary<ModelId, IReadOnlyList<ModelManifest>>> GetAvailableModels(
+        bool includeOnlyLatest,
+        CancellationToken token = default);
+
     Task Install(IModelLibrary target,
         VersionedModelId modelId,
         CancellationToken cancellationToken = default);

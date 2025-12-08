@@ -23,12 +23,12 @@ public sealed record NugetModelPackageCreationResult(
     FileInfo File,
     Sha256Value FileHash);
 
-public sealed class NugetModelPackageBuilder
+public sealed class ModelPackageBuilder
 {
     private readonly IHashProvider<Sha256Value> _hashProvider;
     private readonly IReadOnlyDictionary<InferenceProviderId, IInferenceProviderFactory> _inferenceProviderFactories;
 
-    public NugetModelPackageBuilder(
+    public ModelPackageBuilder(
         IHashProvider<Sha256Value> hashProvider,
         IEnumerable<IInferenceProviderFactory> inferenceProviderFactories)
     {
